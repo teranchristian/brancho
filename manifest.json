@@ -1,0 +1,29 @@
+{
+  "name": "Branchos",
+  "description": "make and copy branch name to the clipboard",
+  "version": "1.0",
+  "manifest_version": 2,
+  "permissions": [
+    "activeTab",
+    "notifications",
+    "declarativeContent",
+    "http://*/",
+    "https://*/"
+  ],
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ],
+    "persistent": false
+  },
+  "commands": {
+    "copy-branch-name": {
+      "description": "Copy branch",
+      "suggested_key": {
+        "default": "Alt+Shift+X",
+        "windows": "Alt+Shift+X",
+        "mac": "Alt+Shift+X"
+      }
+    }
+  }
+}
