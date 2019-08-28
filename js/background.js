@@ -1,5 +1,5 @@
 var cardSelector = 'div.cardeditor-topbar > div.buttons > button > .fui-btn-text';
-var titleSelector = ' > div.cardfield.cardfield-title > div';
+var titleSelector = 'div.cardfield.cardfield-title > div';
 const favroRegex = /.*favro\.com\/organization\/[a-zA-Z0-9]*\/[a-zA-Z0-9]*\?(card)=(.*)/g;
 
 chrome.commands.onCommand.addListener(function(browserTab) {
@@ -30,29 +30,12 @@ chrome.commands.onCommand.addListener(function(browserTab) {
     // send a message to content script
     chrome.tabs.sendMessage(tab.id, "Background page", function (response) {
       var doc = htmlToDocument(response);
-      var cardDiv = doc.querySelector(cardSelector);
-      var cardId = null;
-      if (cardDiv != null) {
-        cardId = cardDiv.innerText.trim().toLowerCase();
-      }
 
-      var idDiv = doc.querySelector(".cardeditor");
-      var cardId = null;
-      if (cardDiv != null) {
-        cardId = cardDiv.innerText.trim().toLowerCase();
-      }
+      var cardId = getCardId(doc);
+      var cardTitle = getCardTitle(doc);
 
-      var titleContainer = doc.querySelector('[id="'+idDiv.id+'"]');
-      var titleDiv = titleContainer.querySelector("div.cardfield.cardfield-title > div")
-      cardTitle = null;
-      if (titleDiv != null) {
-        cardTitle = titleDiv.innerText.trim();
-        cardTitle = cardTitle.replace(/-/g, "");
-        cardTitle = cardTitle.replace(/\s+/g, '-').toLowerCase();
-      }
-      branchName = null;
       if (cardId != null && cardTitle != null) {
-        branchName = cardId + '-' + cardTitle;
+        var branchName = cardId + '-' + cardTitle;
         copyToClipboard(branchName);
         createNotification("Branch name on clipboard", branchName);
       } else {
@@ -62,6 +45,32 @@ chrome.commands.onCommand.addListener(function(browserTab) {
   });
   });
 });
+
+function getCardId(doc) {
+  var cardDiv = doc.querySelector(cardSelector);
+  var cardId = null;
+  if (cardDiv != null) {
+    cardId = cardDiv.innerText.trim().toLowerCase();
+  }
+  return cardId;
+}
+
+function getCardTitle(doc) {
+  var idDiv = doc.querySelector(".cardeditor");
+  var cardTitle = null;
+  if (idDiv == null && idDiv.id == undefined) {
+    return cardTitle;
+  }
+
+  var titleContainer = doc.querySelector('[id="'+idDiv.id+'"]');
+  var titleDiv = titleContainer.querySelector(titleSelector)
+  if (titleDiv != null) {
+    cardTitle = titleDiv.innerText;
+    cardTitle = cardTitle.replace(/[^a-zA-Z0-9]+/gi, " ").toLowerCase().trim();
+    cardTitle = cardTitle.replace(/\s+/g, '-');
+  }
+  return cardTitle;
+}
 
 function createNotification(title, branchName) {
   var opt = {
