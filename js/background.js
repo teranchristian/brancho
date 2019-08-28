@@ -1,5 +1,5 @@
-var cardSelector = 'div.cardpopup-topbar.js-cardpopup-topbar > div.cardpopup-link > div';
-var titleSelector = 'div.cardpopup-content.js-fastcardpopup-cardmiddle > div.cardpopup-content-main.js-cardpopup-content-main > div:nth-child(1) > div.card-popup-field-content > div > div.click-to-edit.js-click-to-edit';
+var cardSelector = 'div.cardeditor-topbar > div.buttons > button > .fui-btn-text';
+var titleSelector = ' > div.cardfield.cardfield-title > div';
 const favroRegex = /.*favro\.com\/organization\/[a-zA-Z0-9]*\/[a-zA-Z0-9]*\?(card)=(.*)/g;
 
 chrome.commands.onCommand.addListener(function(browserTab) {
@@ -35,10 +35,19 @@ chrome.commands.onCommand.addListener(function(browserTab) {
       if (cardDiv != null) {
         cardId = cardDiv.innerText.trim().toLowerCase();
       }
-      var titleDiv = doc.querySelector(titleSelector);
+
+      var idDiv = doc.querySelector(".cardeditor");
+      var cardId = null;
+      if (cardDiv != null) {
+        cardId = cardDiv.innerText.trim().toLowerCase();
+      }
+
+      var titleContainer = doc.querySelector('[id="'+idDiv.id+'"]');
+      var titleDiv = titleContainer.querySelector("div.cardfield.cardfield-title > div")
       cardTitle = null;
       if (titleDiv != null) {
         cardTitle = titleDiv.innerText.trim();
+        cardTitle = cardTitle.replace(/-/g, "");
         cardTitle = cardTitle.replace(/\s+/g, '-').toLowerCase();
       }
       branchName = null;
