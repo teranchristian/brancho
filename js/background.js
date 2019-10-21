@@ -1,75 +1,49 @@
-var cardSelector = 'div.cardeditor-topbar > div.buttons > button > .fui-btn-text';
-var titleSelector = 'div.cardfield.cardfield-title > div';
-const favroRegex = /.*favro\.com\/organization\/[a-zA-Z0-9]*\/[a-zA-Z0-9]*\?(card)=(.*)/g;
+const titleSelector = '[data-test-id=\"issue.views.issue-base.foundation.summary.heading\"]';
 
-chrome.commands.onCommand.addListener(function(browserTab) {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+chrome.commands.onCommand.addListener(browserTab => {
+  chrome.tabs.query({active: true, currentWindow: true}, tabs => {
     if (tabs.length !== 1) {
       return;
     }
-
-    var tab = tabs[0];
-    var matchUrl = false;
-    while ((m = favroRegex.exec(tab.url)) !== null) {
-      // This is necessary to avoid infinite loops with zero-width matches
-      if (m.index === favroRegex.lastIndex) {
-        favroRegex.lastIndex++;
-      }
-      matchUrl = true;
-    }
-    if (!matchUrl) {
+    const tab = tabs[0];
+    const match = tab.url.match(/.*playgroundxyz\.atlassian\.net\/jira\/.*\?selectedIssue=(.*)/i);
+    if (!match || !match[1]) {
       console.log('URL did not match');
       return;
     }
+    const selectedIssue = match[1];
 
-    chrome.tabs.executeScript(tab.id, {file: "js/content.js"}, function () {
+    chrome.tabs.executeScript(tab.id, {file: "js/content.js"}, () => {
       const lastErr = chrome.runtime.lastError;
       if (lastErr){
         console.log('tab: ' + tab.id + ' lastError: ' + JSON.stringify(lastErr));
       };
-    // send a message to content script
-    chrome.tabs.sendMessage(tab.id, "Background page", function (response) {
-      var doc = htmlToDocument(response);
-
-      var cardId = getCardId(doc);
-      var cardTitle = getCardTitle(doc);
-
-      if (cardId != null && cardTitle != null) {
-        var branchName = cardId + '-' + cardTitle;
-        copyToClipboard(branchName);
-        createNotification("Branch name on clipboard", branchName);
-      } else {
-        createNotification("Error", "Branch name not found");
-      }
+      // send a message to content script
+      chrome.tabs.sendMessage(tab.id, "Background page", response => {
+        const doc = htmlToDocument(response);
+        const cardTitle = getCardTitle(doc);
+        if (cardTitle != null) {
+          const branchName = `${selectedIssue}-${cardTitle}`;
+          copyToClipboard(branchName);
+          createNotification("Branch name on clipboard", branchName);
+        } else {
+          createNotification("Error", "Branch name not found");
+        }
+      });
     });
-  });
   });
 });
 
-function getCardId(doc) {
-  var cardDiv = doc.querySelector(cardSelector);
-  var cardId = null;
-  if (cardDiv != null) {
-    cardId = cardDiv.innerText.trim().toLowerCase();
-  }
-  return cardId;
-}
 
 function getCardTitle(doc) {
-  var idDiv = doc.querySelector(".cardeditor");
-  var cardTitle = null;
-  if (idDiv == null && idDiv.id == undefined) {
-    return cardTitle;
+  var titleElement = doc.querySelector("[data-test-id=\"issue.views.issue-base.foundation.summary.heading\"]");
+  if (titleElement) {
+    return titleElement.innerText
+      .replace(/[^a-z0-9\-]/gi, '-')
+      .replace(/(-)([\-]+)/gi, '$1')
+      .toLowerCase()
+      .trim();
   }
-
-  var titleContainer = doc.querySelector('[id="'+idDiv.id+'"]');
-  var titleDiv = titleContainer.querySelector(titleSelector)
-  if (titleDiv != null) {
-    cardTitle = titleDiv.innerText;
-    cardTitle = cardTitle.replace(/[^a-zA-Z0-9]+/gi, " ").toLowerCase().trim();
-    cardTitle = cardTitle.replace(/\s+/g, '-');
-  }
-  return cardTitle;
 }
 
 function createNotification(title, branchName) {
