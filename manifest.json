@@ -1,7 +1,7 @@
 {
   "name": "Brancho",
-  "description": "makes a branch name out of a favro card and copy it to the clipboard",
-  "version": "2.1",
+  "description": "makes a branch name out of a jira card and copy it to the clipboard",
+  "version": "3.2",
   "manifest_version": 2,
   "icons": {
         "16": "img/icon16.png",
