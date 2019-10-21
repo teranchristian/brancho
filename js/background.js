@@ -6,7 +6,7 @@ chrome.commands.onCommand.addListener(browserTab => {
       return;
     }
     const tab = tabs[0];
-    const match = tab.url.match(/.*playgroundxyz\.atlassian\.net\/jira\/.*\?selectedIssue=(.*)/i);
+    const match = tab.url.match(/playgroundxyz\.atlassian.*?([A-Z]{2,20}-\d{1,7})/i);
     if (!match || !match[1]) {
       console.log('URL did not match');
       return;
