@@ -1,8 +1,13 @@
 {
-  "name": "Branchos",
-  "description": "make and copy branch name to the clipboard",
-  "version": "1.0",
+  "name": "Brancho",
+  "description": "makes a branch name out of a favro card and copy it to the clipboard",
+  "version": "2.1",
   "manifest_version": 2,
+  "icons": {
+        "16": "img/icon16.png",
+        "48": "img/icon48.png",
+        "128": "img/icon128.png"
+  },
   "permissions": [
     "activeTab",
     "notifications",
@@ -20,9 +25,9 @@
     "copy-branch-name": {
       "description": "Copy branch",
       "suggested_key": {
-        "default": "Alt+Shift+X",
-        "windows": "Alt+Shift+X",
-        "mac": "Alt+Shift+X"
+        "default": "Ctrl+Shift+X",
+        "windows": "Ctrl+Shift+X",
+        "mac": "Command+Shift+X"
       }
     }
   }
