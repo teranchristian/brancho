@@ -1,80 +1,93 @@
-const titleSelector = '[data-test-id=\"issue.views.issue-base.foundation.summary.heading\"]';
+import * as cheerio from 'cheerio';
 
-chrome.commands.onCommand.addListener(browserTab => {
-  chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+const titleSelector =
+  '[data-test-id="issue.views.issue-base.foundation.summary.heading"]';
+
+chrome.commands.onCommand.addListener((command) => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs.length !== 1) {
       return;
     }
     const tab = tabs[0];
-    const match = tab.url.match(/playgroundxyz\.atlassian.*?([A-Z]{2,20}-\d{1,7})/i);
+    const match = tab.url.match(/.*\.atlassian.*?([A-Z]{2,20}-\d{1,7})/i);
     if (!match || !match[1]) {
       console.log('URL did not match');
       return;
     }
     const selectedIssue = match[1];
 
-    chrome.tabs.executeScript(tab.id, {file: "js/content.js"}, () => {
-      const lastErr = chrome.runtime.lastError;
-      if (lastErr){
-        console.log('tab: ' + tab.id + ' lastError: ' + JSON.stringify(lastErr));
-      };
-      // send a message to content script
-      chrome.tabs.sendMessage(tab.id, "Background page", response => {
-        const doc = htmlToDocument(response);
-        const cardTitle = getCardTitle(doc);
-        if (cardTitle != null) {
-          const branchName = `${selectedIssue}-${cardTitle}`;
-          copyToClipboard(branchName);
-          createNotification("Branch name on clipboard", branchName);
-        } else {
-          createNotification("Error", "Branch name not found");
+    chrome.scripting.executeScript(
+      { target: { tabId: tab.id }, files: ['content.js'] },
+      () => {
+        const lastErr = chrome.runtime.lastError;
+        if (lastErr) {
+          console.log(
+            'tab: ' + tab.id + ' lastError: ' + JSON.stringify(lastErr)
+          );
         }
-      });
-    });
+
+        chrome.tabs.sendMessage(
+          tab.id,
+          { message: 'getPageDOM' },
+          (response) => {
+            if (!response) {
+              console.log('error');
+              return;
+            }
+            const $ = cheerio.load(response);
+            const cardTitle = getCardTitle($);
+            if (cardTitle != null) {
+              const branchName = `${selectedIssue}-${cardTitle}`;
+              console.log('sending..');
+              chrome.tabs.sendMessage(
+                tab.id,
+                {
+                  message: 'copyToClipboard',
+                  textToCopy: branchName,
+                },
+                (response) => {
+                  console.log('DONE!', response);
+                }
+              );
+              createNotification('Branch name on clipboard', branchName);
+            } else {
+              createNotification('Error', 'Branch name not found');
+            }
+          }
+        );
+      }
+    );
   });
 });
 
-
-function getCardTitle(doc) {
-  var titleElement = doc.querySelector("[data-test-id=\"issue.views.issue-base.foundation.summary.heading\"]");
+function getCardTitle($) {
+  var titleElement = $(titleSelector).text();
   if (titleElement) {
-    return titleElement.innerText
-      .replace(/[^a-z0-9\-]/gi, '-')
-      .replace(/(-)([\-]+)/gi, '$1')
-      .toLowerCase()
-      .trim();
+    return (
+      titleElement
+        .replace(/[^a-z0-9\-]/gi, '-')
+        .replace(/(-)([\-]+)/gi, '$1')
+        // remove multuples "-"
+        .replace(/-+/g, '-')
+        //remove last character if it is a "-"
+        .replace(/-$/, '')
+        .replace(/^-/, '')
+        .toLowerCase()
+        .trim()
+    );
   }
 }
 
 function createNotification(title, branchName) {
   var opt = {
-    type: "basic",
+    type: 'basic',
     title: title,
     message: branchName,
-    iconUrl: "img/b-icon-24.png"
+    iconUrl: 'img/b-icon-24.png',
   };
   chrome.notifications.create(null, opt, function (notificationId) {
-    timer = setTimeout(function () {
+    setTimeout(function () {
       chrome.notifications.clear(notificationId);
     }, 3000);
   });
-}
-
-function copyToClipboard(branchName) {
-  const input = document.createElement("input");
-  input.style.position = "fixed";
-  input.style.opacity = 0;
-  input.value = branchName;
-  document.body.appendChild(input);
-  input.select();
-  document.execCommand("Copy");
-  document.body.removeChild(input);
-};
-
-function htmlToDocument(str) {
-  var template = document.createElement("template");
-  if (template.content) {
-    template.innerHTML = str;
-    return template.content;
-  }
 }

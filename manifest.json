@@ -1,26 +1,24 @@
 {
   "name": "Brancho",
   "description": "makes a branch name out of a jira card and copy it to the clipboard",
-  "version": "3.2",
-  "manifest_version": 2,
+  "version": "4.0",
+  "manifest_version": 3,
   "icons": {
-        "16": "img/icon16.png",
-        "48": "img/icon48.png",
-        "128": "img/icon128.png"
+    "16": "img/icon16.png",
+    "48": "img/icon48.png",
+    "128": "img/icon128.png"
   },
   "permissions": [
     "activeTab",
+    "scripting",
     "notifications",
-    "declarativeContent",
-    "http://*/",
-    "https://*/"
+    "clipboardWrite",
+    "declarativeContent"
   ],
   "background": {
-    "scripts": [
-      "js/background.js"
-    ],
-    "persistent": false
+    "service_worker": "background.js"
   },
+  "action": {},
   "commands": {
     "copy-branch-name": {
       "description": "Copy branch",

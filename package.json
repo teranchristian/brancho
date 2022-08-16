@@ -1,0 +1,36 @@
+{
+  "name": "brancho",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node scripts/build.js",
+    "start": "node scripts/webpack.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teranchristian/brancho.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/teranchristian/brancho/issues"
+  },
+  "homepage": "https://github.com/teranchristian/brancho#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "copy-to-clipboard": "^3.3.1"
+  },
+  "devDependencies": {
+    "babel-loader": "^8.2.2",
+    "babel-preset-react-app": "^10.0.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^9.0.1",
+    "html-webpack-plugin": "^5.3.2",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0",
+    "webpack-dev-server": "^4.3.1",
+    "write-file-webpack-plugin": "^4.5.1"
+  }
+}
