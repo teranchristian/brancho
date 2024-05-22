@@ -1,5 +1,3 @@
-import * as cheerio from 'cheerio';
-
 chrome.runtime.onMessage.addListener((request, sender) => {
   if (request.type == 'branchCopied') {
     createNotification('Branch name on clipboard', request.branchName);
