@@ -1,11 +1,9 @@
 chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
-  if (request.message === 'getPageDOM') {
-    sendResponse(document.all[0].outerHTML);
-  }
-
-  if (request.message === 'copyToClipboard') {
-    copyToClipboard(request.textToCopy);
-    sendResponse('ok');
+  if (request.message === 'getTicketTitle') {
+    const titleSelector =
+      '[data-testid="issue.views.issue-base.foundation.summary.heading"]';
+    const title = document.querySelector(titleSelector)?.innerText;
+    sendResponse(title);
   }
 });
 
@@ -27,5 +25,9 @@ function copyToClipboard(branchName) {
       } else {
         console.log('Error: ', result);
       }
+    })
+    .catch((error) => {
+      // couldn't query the permission
+      console.error(error);
     });
 }
