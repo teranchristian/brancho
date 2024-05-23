@@ -1,5 +1,5 @@
 {
-  "name": "brancho",
+  "name": "brancho-beta",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/teranchristian/brancho#readme",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.10",
     "copy-to-clipboard": "^3.3.1"
   },
   "devDependencies": {
