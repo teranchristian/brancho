@@ -2,9 +2,19 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
   if (request.message === 'getJiraTicketTitle') {
     const titleSelector =
       '[data-testid="issue.views.issue-base.foundation.summary.heading"]';
-    // @ts-ignore:next-line
-    const title = document.querySelector(titleSelector)?.innerText;
-    sendResponse(title);
+    const divElement = document.querySelector(titleSelector) as HTMLDivElement;
+
+    const issueSelector =
+      '[data-testid="issue.views.issue-base.foundation.breadcrumbs.current-issue.item"] > span';
+    const spanElement = document.querySelector(
+      issueSelector
+    ) as HTMLSpanElement;
+
+    const issue = spanElement?.innerText;
+    const title = divElement?.innerText;
+
+    const brachName = `${issue}-${title}`;
+    sendResponse(brachName);
   }
 
   if (request.message === 'getGitHubTicketTitle') {
@@ -15,7 +25,6 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
       return;
     }
     const branchName = clipboardCopyElement.getAttribute('value');
-    console.log(branchName);
     sendResponse(branchName);
   }
 });

@@ -1,4 +1,5 @@
 import {
+  branchCopyToClipboard,
   createNotification,
   executeContentScript,
   getActiveTab,
@@ -30,9 +31,22 @@ const handleCommandCopyBranchName = () => {
     }
 
     const { handler, ticketGetMessageName } = result;
+
     executeContentScript(tabId, () => {
       handleRuntimeError(tabId);
-      sendMessage(tabId, ticketGetMessageName, handler);
+
+      sendMessage(tabId, ticketGetMessageName, (res: string) => {
+        const branchName = handler(res);
+        if (!branchName) {
+          createNotification('Error', 'Branch name not found');
+          return;
+        }
+        chrome.scripting.executeScript({
+          target: { tabId: tabId },
+          func: branchCopyToClipboard,
+          args: [branchName],
+        });
+      });
     });
   });
 };

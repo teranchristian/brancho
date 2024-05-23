@@ -6,6 +6,7 @@ export const createNotification = (title: string, message: string) => {
       title: title,
       message: message,
       iconUrl: 'img/b-icon-24.png',
+      priority: 2,
     },
     (notificationId) => {
       setTimeout(() => {

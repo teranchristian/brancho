@@ -7,13 +7,13 @@
     "esModuleInterop": true,
     "removeComments": true,
     "outDir": "dist",
-    "rootDir": "js",
+    "rootDir": "src",
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "useUnknownInCatchVariables": false,
     "experimentalDecorators": true,
     "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["js/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

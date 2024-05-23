@@ -22,7 +22,8 @@ var fileExtensions = [
 var options = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
-    background: path.join(__dirname, 'js', 'background.ts'),
+    background: path.join(__dirname, 'src', 'background.ts'),
+    content: path.join(__dirname, 'src', 'content.ts'),
   },
   output: {
     globalObject: 'this',
@@ -107,10 +108,10 @@ var options = {
             );
           },
         },
-        {
-          from: 'js/content.ts',
-          to: path.join(__dirname, 'dist', 'content.js'),
-        },
+        // {
+        //   from: 'src/content.ts',
+        //   to: path.join(__dirname, 'dist', 'content.js'),
+        // },
         {
           from: 'img',
           to: path.join(__dirname, 'dist', 'img'),
