@@ -22,7 +22,7 @@ var fileExtensions = [
 var options = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
-    background: path.join(__dirname, 'js', 'background.js'),
+    background: path.join(__dirname, 'js', 'background.ts'),
   },
   output: {
     globalObject: 'this',
@@ -65,12 +65,17 @@ var options = {
         loader: 'babel-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.ts$/, // New rule for TypeScript files
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+      },
     ],
   },
   resolve: {
     extensions: fileExtensions
       .map((extension) => '.' + extension)
-      .concat(['.jsx', '.js', '.css']),
+      .concat(['.jsx', '.js', '.css', '.ts']),
   },
   plugins: [
     new webpack.ProgressPlugin(),
@@ -103,8 +108,8 @@ var options = {
           },
         },
         {
-          from: 'js/content.js',
-          to: path.join(__dirname, 'dist'),
+          from: 'js/content.ts',
+          to: path.join(__dirname, 'dist', 'content.js'),
         },
         {
           from: 'img',
