@@ -1,30 +1,45 @@
+const handleJiraTicketTitle = (sendResponse: any) => {
+  const basedSelector = 'issue.views.issue-base.foundation';
+  const titleSelector = `[data-testid="${basedSelector}.summary.heading"]`;
+  const issueSelector = `[data-testid="${basedSelector}.breadcrumbs.current-issue.item"] > span`;
+
+  const spanElement = document.querySelector(issueSelector) as HTMLSpanElement;
+  const divElement = document.querySelector(titleSelector) as HTMLDivElement;
+
+  const issue = spanElement?.innerText;
+  let title = divElement?.innerText;
+  if (!issue || !title) {
+    sendResponse(null);
+    return;
+  }
+  title = title
+    .replace(/\[.*?\]\s*\|\s*/, '') // remove components from title "[<COMPONENTS>] |"
+    .replace(/[^a-z0-9\-]/gi, '-') // replace non-alphanumeric characters with "-"
+    .replace(/-+/g, '-') // remove multiple "-"
+    .replace(/^-|-$/g, '') // remove "-" at the start or end
+    .toLowerCase()
+    .trim();
+
+  sendResponse(`${issue}-${title}`);
+};
+
+const handleGitHubTicketTitle = (sendResponse: any): void => {
+  const branchSelector = 'clipboard-copy[aria-label="Copy"]';
+  const branchName = document
+    .querySelector(branchSelector)
+    ?.getAttribute('value');
+  sendResponse(branchName);
+};
+
+const handlers: { [key: string]: (sendResponse: any) => void } = {
+  jira: handleJiraTicketTitle,
+  github: handleGitHubTicketTitle,
+};
+
 chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
-  if (request.message === 'getJiraTicketTitle') {
-    const titleSelector =
-      '[data-testid="issue.views.issue-base.foundation.summary.heading"]';
-    const divElement = document.querySelector(titleSelector) as HTMLDivElement;
-
-    const issueSelector =
-      '[data-testid="issue.views.issue-base.foundation.breadcrumbs.current-issue.item"] > span';
-    const spanElement = document.querySelector(
-      issueSelector
-    ) as HTMLSpanElement;
-
-    const issue = spanElement?.innerText;
-    const title = divElement?.innerText;
-
-    const brachName = `${issue}-${title}`;
-    sendResponse(brachName);
+  if (handlers[request.message]) {
+    handlers[request.message](sendResponse);
+    return;
   }
-
-  if (request.message === 'getGitHubTicketTitle') {
-    const clipboardCopySelector = 'clipboard-copy[aria-label="Copy"]';
-    const clipboardCopyElement = document.querySelector(clipboardCopySelector);
-    if (!clipboardCopyElement) {
-      sendResponse(null);
-      return;
-    }
-    const branchName = clipboardCopyElement.getAttribute('value');
-    sendResponse(branchName);
-  }
+  sendResponse(null);
 });

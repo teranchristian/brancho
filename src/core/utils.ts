@@ -1,39 +1,3 @@
-export const createNotification = (title: string, message: string) => {
-  chrome.notifications.create(
-    'Brancho',
-    {
-      type: 'basic',
-      title: title,
-      message: message,
-      iconUrl: 'img/b-icon-24.png',
-      priority: 2,
-    },
-    (notificationId) => {
-      setTimeout(() => {
-        chrome.notifications.clear(notificationId);
-      }, 3000);
-    }
-  );
-};
-
-export const formatTicketTitle = (title: string) => {
-  return (
-    title
-      // remove components from title "[<COMPONENTS>] |"
-      .replace(/\[.*?\]\s*\|\s*/, '')
-      .replace(/[^a-z0-9\-]/gi, '-')
-      .replace(/(-)([\-]+)/gi, '$1')
-      // remove multuples "-"
-      .replace(/-+/g, '-')
-      //remove last character if it is a "-"
-      .replace(/-$/, '')
-      //remove first character if it is a "-"
-      .replace(/^-/, '')
-      .toLowerCase()
-      .trim()
-  );
-};
-
 export const sendMessage = (
   tabId: number,
   message: string,
@@ -44,20 +8,6 @@ export const sendMessage = (
       callback(response);
     }
   });
-};
-
-export const branchCopyToClipboard = (text: string) => {
-  navigator.clipboard
-    .writeText(text)
-    .then(() => {
-      chrome.runtime.sendMessage({ type: 'branchCopied', branchName: text });
-    })
-    .catch((error) => {
-      chrome.runtime.sendMessage({
-        type: 'clipboardError',
-      });
-      console.error('Clipboard write failed', error.message);
-    });
 };
 
 export const getActiveTab = (
