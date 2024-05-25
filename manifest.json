@@ -28,6 +28,7 @@
       ]
     }
   ],
+  "options_page": "option/index.html",
   "action": {},
   "commands": {
     "copy-branch-name": {

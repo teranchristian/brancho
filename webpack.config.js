@@ -24,11 +24,18 @@ var options = {
   entry: {
     background: path.join(__dirname, 'src', 'background.ts'),
     content: path.join(__dirname, 'src', 'content.ts'),
+    option: path.join(__dirname, 'src/option', 'option.ts'),
   },
   output: {
     globalObject: 'this',
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js',
+    filename: (pathData) => {
+      const name = pathData.chunk.name;
+      if (name === 'option') {
+        return 'option/[name].js';
+      }
+      return '[name].js';
+    },
   },
   module: {
     rules: [
@@ -116,12 +123,19 @@ var options = {
           from: 'img',
           to: path.join(__dirname, 'dist', 'img'),
         },
+        {
+          from: 'src/option',
+          to: path.join(__dirname, 'dist', 'option'),
+          globOptions: {
+            ignore: ['**/*.ts'],
+          },
+        },
       ],
     }),
     // new HtmlWebpackPlugin({
-    //   template: path.join(__dirname, 'src', 'popup.html'),
-    //   filename: 'popup.html',
-    //   chunks: ['popup'],
+    //   template: path.join(__dirname, 'src/option', 'index.html'),
+    //   filename: 'index.html',
+    //   chunks: ['option'],
     // }),
     new WriteFilePlugin(),
   ],
