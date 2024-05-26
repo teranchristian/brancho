@@ -7,7 +7,10 @@ export const getHandlerNameForUrl = (url: string) => {
   for (const handler of handlers) {
     const match = handler.match(url);
     if (match) {
-      return handler.name;
+      return {
+        name: handler.name,
+        runner: handler.runner,
+      };
     }
   }
   console.log('URL did not match');

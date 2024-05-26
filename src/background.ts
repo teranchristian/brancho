@@ -1,3 +1,4 @@
+import { jiraHandler } from './handlers/jira';
 import { copyBranchNameToClipboard } from './core/copyBranch';
 import { pushNotification } from './core/notification';
 import {
@@ -7,20 +8,13 @@ import {
   sendMessage,
 } from './core/utils';
 import { getHandlerNameForUrl } from './handlers/handler';
-
-const defaultJiraConfig: JiraConfig = {
-  issueCase: 'upper',
-  titleCase: 'lower',
-  includeTitle: true,
-};
-
-const JIRA_BRANCH_CONFIG_KEY = 'jiraBranchConfig';
+import { JIRA_BRANCH_CONFIG_KEY, DEFAULT_JIRA_CONFIG } from './core/constant';
 
 const setDefaultConfig = () => {
   chrome.storage.sync.get([JIRA_BRANCH_CONFIG_KEY], (result) => {
     if (!result[JIRA_BRANCH_CONFIG_KEY]) {
       chrome.storage.sync.set(
-        { [JIRA_BRANCH_CONFIG_KEY]: defaultJiraConfig },
+        { [JIRA_BRANCH_CONFIG_KEY]: DEFAULT_JIRA_CONFIG },
         () => {
           console.log('Default configuration saved');
         }
@@ -45,32 +39,20 @@ chrome.runtime.onMessage.addListener((request) => {
 
 const commandCopyBranchName = () => {
   getActiveTab((url, tabId) => {
-    const handlerName = getHandlerNameForUrl(url);
-    if (!handlerName) {
+    const handler = getHandlerNameForUrl(url);
+    if (!handler) {
       console.warn(`Brancho: No handler found for url: ${url}`);
       return;
     }
 
-    executeContentScript(tabId, () => {
+    executeContentScript(tabId, async () => {
       handleRuntimeError(tabId);
-
-      chrome.storage.sync.get([JIRA_BRANCH_CONFIG_KEY], (result) => {
-        let branchConfig = result[JIRA_BRANCH_CONFIG_KEY] as JiraConfig | null;
-        if (handlerName !== 'jira') {
-          branchConfig = null;
-        }
-        sendMessage(
-          tabId,
-          { message: handlerName, branchConfig },
-          (branchName: string | null) => {
-            if (!branchName) {
-              pushNotification('Error', 'Branch name not found');
-              return;
-            }
-            copyBranchNameToClipboard(branchName, tabId);
-          }
-        );
-      });
+      const branchName = await handler.runner(tabId);
+      if (!branchName) {
+        pushNotification('Error', 'Branch name not found');
+        return;
+      }
+      copyBranchNameToClipboard(branchName, tabId);
     });
   });
 };
