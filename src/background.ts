@@ -8,6 +8,27 @@ import {
 } from './core/utils';
 import { getHandlerNameForUrl } from './handlers/handler';
 
+const defaultJiraConfig = {
+  issueCase: 'upper',
+  titleCase: 'lower',
+  includeTitle: true,
+};
+
+const JIRA_BRANCH_CONFIG_KEY = 'jiraBranchConfig';
+
+const setDefaultConfig = () => {
+  chrome.storage.sync.get([JIRA_BRANCH_CONFIG_KEY], (result) => {
+    if (!result[JIRA_BRANCH_CONFIG_KEY]) {
+      chrome.storage.sync.set(
+        { [JIRA_BRANCH_CONFIG_KEY]: defaultJiraConfig },
+        () => {
+          console.log('Default configuration saved');
+        }
+      );
+    }
+  });
+};
+
 chrome.runtime.onMessage.addListener((request) => {
   const { type } = request;
   switch (type) {
@@ -47,5 +68,14 @@ const commandCopyBranchName = () => {
 chrome.commands.onCommand.addListener((command: string) => {
   if (command === 'copy-branch-name') {
     commandCopyBranchName();
+  }
+});
+
+// Listen for the install event
+chrome.runtime.onInstalled.addListener(function (details) {
+  console.log('-->', details.reason);
+  if (['install', 'update'].includes(details.reason)) {
+    console.log('eeeh');
+    setDefaultConfig();
   }
 });

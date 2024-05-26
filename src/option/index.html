@@ -9,48 +9,58 @@
 </head>
 
 <body>
+
   <div class="container">
-    <div class="header">
-      <img src="../../img/brancho-icon.png" alt="Icon">
-      <h1>Config Panel</h1>
+
+    <div class="loading" id="loadingMessage">
+      <div class="loading-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
 
-    <h2>Jira Branch Name</h2>
+    <div class="hidden" id="mainContent">
+      <div class=" header">
+        <img src="../../img/brancho-icon.png" alt="Icon">
+        <h1>Config Panel</h1>
+      </div>
+      <h2>Jira Branch Name</h2>
 
-    <div class="branch-name-format">
-      <span class="tag selected" id="issueKeyBtn">Issue key</span>
-      <span class="tag selected" id="issueSummaryBtn">Issue summary</span>
+      <div class="branch-name-format">
+        <span class="tag selected" id="issueKeyBtn">Issue key</span>
+        <span class="tag" id="issueSummaryBtn">Issue summary</span>
+      </div>
+      <div class="note">The issue key is mandatory and cannot be deselected.</div>
+
+
+      <h3>Case Options</h3>
+
+      <div class="case-options">
+        <label>Issue key case:</label>
+        <input type="radio" name="issueKeyCase" value="upper"> Upper case
+        <input type="radio" name="issueKeyCase" value="lower"> Lower case
+      </div>
+
+      <div class="case-options">
+        <label>Issue summary case:</label>
+        <input type="radio" name="issueSummaryCase" id="issueSummaryUpper" value="upper"> Upper case
+        <input type="radio" name="issueSummaryCase" id="issueSummaryLower" value="lower"> Lower case
+      </div>
+
+      <h3>Preview</h3>
+
+      <div id="preview" class="preview">
+        <code></code>
+      </div>
+
+      <div class="action-buttons">
+        <div class="loader"></div>
+        <button class="save" id="save">Save</button>
+      </div>
+
+
     </div>
-    <div class="note">The issue key is mandatory and cannot be deselected.</div>
-
-
-    <h3>Case Options</h3>
-
-    <div class="case-options">
-      <label>Issue key case:</label>
-      <input type="radio" name="issueKeyCase" value="upper"> Upper case
-      <input type="radio" name="issueKeyCase" value="lower"> Lower case
-    </div>
-
-    <div class="case-options">
-      <label>Issue summary case:</label>
-      <input type="radio" name="issueSummaryCase" id="issueSummaryUpper" value="upper"> Upper case
-      <input type="radio" name="issueSummaryCase" id="issueSummaryLower" value="lower"> Lower case
-    </div>
-
-    <h3>Preview</h3>
-
-    <div id="preview" class="preview">
-      <code></code>
-    </div>
-
-    <div class="action-buttons">
-      <!-- <button class="cancel">Cancel</button> -->
-      <div class="loader"></div>
-      <button class="save" id="save">Save</button>
-    </div>
-
-    
   </div>
 
 </body>
