@@ -1,4 +1,4 @@
-const handleJiraTicketTitle = (sendResponse: any) => {
+const handleJiraTicketTitle = (sendResponse: any, branchConfig: JiraConfig) => {
   const basedSelector = 'issue.views.issue-base.foundation';
   const titleSelector = `[data-testid="${basedSelector}.summary.heading"]`;
   const issueSelector = `[data-testid="${basedSelector}.breadcrumbs.current-issue.item"] > span`;
@@ -20,7 +20,24 @@ const handleJiraTicketTitle = (sendResponse: any) => {
     .toLowerCase()
     .trim();
 
-  sendResponse(`${issue}-${title}`);
+  const formatBranchName = (
+    number: string,
+    title: string,
+    config: JiraConfig
+  ) => {
+    const applyCase = (text: string, caseOption: string) =>
+      caseOption === 'upper' ? text.toUpperCase() : text.toLowerCase();
+    const formattedNumber = applyCase(number, config.issueCase);
+
+    if (config.includeTitle) {
+      const formattedTitle = applyCase(title, config.titleCase);
+      return `${formattedNumber}-${formattedTitle}`;
+    }
+
+    return formattedNumber;
+  };
+
+  sendResponse(formatBranchName(issue, title, branchConfig));
 };
 
 const handleGitHubTicketTitle = (sendResponse: any): void => {
@@ -31,14 +48,16 @@ const handleGitHubTicketTitle = (sendResponse: any): void => {
   sendResponse(branchName);
 };
 
-const handlers: { [key: string]: (sendResponse: any) => void } = {
+const handlers: {
+  [key: string]: (sendResponse: any, branchConfig: JiraConfig) => void;
+} = {
   jira: handleJiraTicketTitle,
   github: handleGitHubTicketTitle,
 };
 
 chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
   if (handlers[request.message]) {
-    handlers[request.message](sendResponse);
+    handlers[request.message](sendResponse, request.branchConfig);
     return;
   }
   sendResponse(null);

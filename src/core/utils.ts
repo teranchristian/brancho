@@ -1,9 +1,9 @@
 export const sendMessage = (
   tabId: number,
-  message: string,
+  params: { message: string; branchConfig: JiraConfig | null },
   callback: (res: string) => void
 ) => {
-  chrome.tabs.sendMessage(tabId, { message }, (response) => {
+  chrome.tabs.sendMessage(tabId, params, (response) => {
     if (response) {
       callback(response);
     }

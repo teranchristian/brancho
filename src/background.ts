@@ -8,7 +8,7 @@ import {
 } from './core/utils';
 import { getHandlerNameForUrl } from './handlers/handler';
 
-const defaultJiraConfig = {
+const defaultJiraConfig: JiraConfig = {
   issueCase: 'upper',
   titleCase: 'lower',
   includeTitle: true,
@@ -54,12 +54,22 @@ const commandCopyBranchName = () => {
     executeContentScript(tabId, () => {
       handleRuntimeError(tabId);
 
-      sendMessage(tabId, handlerName, (branchName: string | null) => {
-        if (!branchName) {
-          pushNotification('Error', 'Branch name not found');
-          return;
+      chrome.storage.sync.get([JIRA_BRANCH_CONFIG_KEY], (result) => {
+        let branchConfig = result[JIRA_BRANCH_CONFIG_KEY] as JiraConfig | null;
+        if (handlerName !== 'jira') {
+          branchConfig = null;
         }
-        copyBranchNameToClipboard(branchName, tabId);
+        sendMessage(
+          tabId,
+          { message: handlerName, branchConfig },
+          (branchName: string | null) => {
+            if (!branchName) {
+              pushNotification('Error', 'Branch name not found');
+              return;
+            }
+            copyBranchNameToClipboard(branchName, tabId);
+          }
+        );
       });
     });
   });
@@ -71,11 +81,9 @@ chrome.commands.onCommand.addListener((command: string) => {
   }
 });
 
-// Listen for the install event
+// Listen for the install/update event
 chrome.runtime.onInstalled.addListener(function (details) {
-  console.log('-->', details.reason);
   if (['install', 'update'].includes(details.reason)) {
-    console.log('eeeh');
     setDefaultConfig();
   }
 });
