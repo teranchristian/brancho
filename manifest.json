@@ -1,5 +1,5 @@
 {
-  "name": "Brancho-beta",
+  "name": "Brancho",
   "description": "makes a branch name out of a jira card and copy it to the clipboard",
   "version": "5.0",
   "manifest_version": 3,
