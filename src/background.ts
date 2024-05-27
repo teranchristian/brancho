@@ -5,23 +5,9 @@ import {
   executeContentScript,
   getActiveTab,
   handleRuntimeError,
-  sendMessage,
 } from './core/utils';
 import { getHandlerNameForUrl } from './handlers/handler';
-import { JIRA_BRANCH_CONFIG_KEY, DEFAULT_JIRA_CONFIG } from './core/constant';
-
-const setDefaultConfig = () => {
-  chrome.storage.sync.get([JIRA_BRANCH_CONFIG_KEY], (result) => {
-    if (!result[JIRA_BRANCH_CONFIG_KEY]) {
-      chrome.storage.sync.set(
-        { [JIRA_BRANCH_CONFIG_KEY]: DEFAULT_JIRA_CONFIG },
-        () => {
-          console.log('Default configuration saved');
-        }
-      );
-    }
-  });
-};
+import { setDefaultConfig } from './core/storage';
 
 chrome.runtime.onMessage.addListener((request) => {
   const { type } = request;

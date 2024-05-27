@@ -1,5 +1,5 @@
-import { JIRA_BRANCH_CONFIG_KEY } from '../core/constant';
-import { JiraMessageResponse, JiraConfig } from '../core/interface';
+import { JiraMessageResponse } from '../core/interface';
+import { getBranchConfig } from '../core/storage';
 import { formatBranchName, sendMessage } from '../core/utils';
 
 export const jiraHandler = {
@@ -9,14 +9,10 @@ export const jiraHandler = {
   runner: (tabId: number): Promise<string | null> => {
     return new Promise((resolve) => {
       sendMessage<JiraMessageResponse>(tabId, 'jira', (response) => {
-        chrome.storage.sync.get([JIRA_BRANCH_CONFIG_KEY], (result) => {
-          let branchConfig = result[
-            JIRA_BRANCH_CONFIG_KEY
-          ] as JiraConfig | null;
+        getBranchConfig().then((branchConfig) => {
           if (!branchConfig || !response) {
             return resolve(null);
           }
-
           return resolve(
             formatBranchName(response.issue, response.title, branchConfig)
           );
