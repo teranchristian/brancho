@@ -12,26 +12,22 @@ const handleJiraTicketTitle = (sendResponse: any) => {
     sendResponse(null);
     return;
   }
-  title = title
-    .replace(/\[.*?\]\s*\|\s*/, '') // remove components from title "[<COMPONENTS>] |"
-    .replace(/[^a-z0-9\-]/gi, '-') // replace non-alphanumeric characters with "-"
-    .replace(/-+/g, '-') // remove multiple "-"
-    .replace(/^-|-$/g, '') // remove "-" at the start or end
-    .toLowerCase()
-    .trim();
-
-  sendResponse(`${issue}-${title}`);
+  sendResponse({
+    issue,
+    title,
+  });
 };
 
 const handleGitHubTicketTitle = (sendResponse: any): void => {
   const branchSelector = 'clipboard-copy[aria-label="Copy"]';
-  const branchName = document
-    .querySelector(branchSelector)
-    ?.getAttribute('value');
-  sendResponse(branchName);
+  const branchName =
+    document.querySelector(branchSelector)?.getAttribute('value') ?? null;
+  sendResponse({ branchName });
 };
 
-const handlers: { [key: string]: (sendResponse: any) => void } = {
+const handlers: {
+  [key: string]: (sendResponse: any) => void;
+} = {
   jira: handleJiraTicketTitle,
   github: handleGitHubTicketTitle,
 };

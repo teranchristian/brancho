@@ -1,7 +1,7 @@
 {
   "name": "Brancho",
   "description": "makes a branch name out of a jira card and copy it to the clipboard",
-  "version": "5.0",
+  "version": "6.0",
   "manifest_version": 3,
   "icons": {
     "16": "img/icon16.png",
@@ -13,7 +13,8 @@
     "scripting",
     "notifications",
     "clipboardWrite",
-    "declarativeContent"
+    "declarativeContent",
+    "storage"
   ],
   "background": {
     "service_worker": "background.js"
@@ -28,6 +29,7 @@
       ]
     }
   ],
+  "options_page": "option/index.html",
   "action": {},
   "commands": {
     "copy-branch-name": {

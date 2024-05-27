@@ -1,12 +1,13 @@
+import { jiraHandler } from './handlers/jira';
 import { copyBranchNameToClipboard } from './core/copyBranch';
 import { pushNotification } from './core/notification';
 import {
   executeContentScript,
   getActiveTab,
   handleRuntimeError,
-  sendMessage,
 } from './core/utils';
 import { getHandlerNameForUrl } from './handlers/handler';
+import { setDefaultConfig } from './core/storage';
 
 chrome.runtime.onMessage.addListener((request) => {
   const { type } = request;
@@ -24,22 +25,20 @@ chrome.runtime.onMessage.addListener((request) => {
 
 const commandCopyBranchName = () => {
   getActiveTab((url, tabId) => {
-    const handlerName = getHandlerNameForUrl(url);
-    if (!handlerName) {
+    const handler = getHandlerNameForUrl(url);
+    if (!handler) {
       console.warn(`Brancho: No handler found for url: ${url}`);
       return;
     }
 
-    executeContentScript(tabId, () => {
+    executeContentScript(tabId, async () => {
       handleRuntimeError(tabId);
-
-      sendMessage(tabId, handlerName, (branchName: string | null) => {
-        if (!branchName) {
-          pushNotification('Error', 'Branch name not found');
-          return;
-        }
-        copyBranchNameToClipboard(branchName, tabId);
-      });
+      const branchName = await handler.runner(tabId);
+      if (!branchName) {
+        pushNotification('Error', 'Branch name not found');
+        return;
+      }
+      copyBranchNameToClipboard(branchName, tabId);
     });
   });
 };
@@ -47,5 +46,12 @@ const commandCopyBranchName = () => {
 chrome.commands.onCommand.addListener((command: string) => {
   if (command === 'copy-branch-name') {
     commandCopyBranchName();
+  }
+});
+
+// Listen for the install/update event
+chrome.runtime.onInstalled.addListener(function (details) {
+  if (['install', 'update'].includes(details.reason)) {
+    setDefaultConfig();
   }
 });

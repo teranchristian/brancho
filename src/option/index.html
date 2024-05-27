@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jira Branch Name Config</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="loading" id="loadingMessage">
+      <div class="loading-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="hidden" id="mainContent">
+      <div class=" header">
+        <img src="../../img/brancho-icon.png" alt="Icon">
+        <h1>Config Panel</h1>
+      </div>
+      <h2>Jira Branch Name</h2>
+
+      <div class="branch-name-format">
+        <span class="tag selected" id="issueKeyBtn">Issue Key</span>
+        <span class="tag" id="issueTitleBtn">Issue Title</span>
+      </div>
+      <div class="note">The issue key is mandatory and cannot be deselected.</div>
+
+      <br />
+      <h3>Case Options</h3>
+
+      <div class="case-options">
+        <label>Issue key case:</label>
+        <input type="radio" name="issueKeyCase" value="upper"> Upper case
+        <input type="radio" name="issueKeyCase" value="lower"> Lower case
+      </div>
+
+      <div id="issueTitleOptions">
+        <div class="case-options">
+          <label>Issue title case:</label>
+          <input type="radio" name="issueTitleCase" id="issueTitleUpper" value="upper"> Upper case
+          <input type="radio" name="issueTitleCase" id="issueTitleLower" value="lower"> Lower case
+        </div>
+
+        <div class="length-options">
+          <label>Issue title length:</label>
+          <input type="radio" name="issueTitleLength" id="issueTitleFull" value="full"> Full (all words)
+          <input type="radio" name="issueTitleLength" id="issueTitleShort" value="short"> Short (first 5 words)
+        </div>
+      </div>
+
+      </br>
+      <h3>Preview</h3>
+
+      <div id="preview" class="preview">
+        <code></code>
+      </div>
+      </br>
+      <div class="action-buttons">
+        <div class="loader"></div>
+        <button class="save" id="save">Save</button>
+      </div>
+
+
+    </div>
+  </div>
+
+</body>
+<script type="text/javascript" src="./option.js"></script>
+
+</html>
