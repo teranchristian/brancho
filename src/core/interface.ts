@@ -1,14 +1,20 @@
-interface JiraConfig {
-  issueCase: string;
+export interface JiraConfig {
+  keyCase: string;
   titleCase: string;
+  titleLength: string;
   includeTitle: boolean;
 }
 
-interface JiraMessageResponse {
+export interface JiraMessageResponse {
   issue: string;
   title: string;
 }
 
-interface GithubMessageResponse {
-  branchName: string | null;
+export interface GithubMessageResponse {
+  branchName: string;
+}
+
+export enum JiraTitleLengthType {
+  FULL = 'full',
+  SHORT = 'short',
 }

@@ -1,3 +1,6 @@
+import { JIRA_TITLE_SHORT_WORD_LIMIT } from './constant';
+import { JiraConfig, JiraTitleLengthType } from './interface';
+
 export const sendMessage = <T>(
   tabId: number,
   message: string,
@@ -44,7 +47,7 @@ export const formatBranchName = (
 ) => {
   const applyCase = (text: string, caseOption: string) =>
     caseOption === 'upper' ? text.toUpperCase() : text.toLowerCase();
-  const formattedNumber = applyCase(number, config.issueCase);
+  const formattedNumber = applyCase(number, config.keyCase);
 
   if (config.includeTitle) {
     const titleBranchFormat = title
@@ -55,7 +58,15 @@ export const formatBranchName = (
       .toLowerCase()
       .trim();
 
-    const formattedTitle = applyCase(titleBranchFormat, config.titleCase);
+    let formattedTitle = applyCase(titleBranchFormat, config.titleCase);
+
+    if (config.titleLength === JiraTitleLengthType.SHORT) {
+      formattedTitle = formattedTitle
+        .split('-')
+        .slice(0, JIRA_TITLE_SHORT_WORD_LIMIT)
+        .join('-');
+    }
+
     return `${formattedNumber}-${formattedTitle}`;
   }
 

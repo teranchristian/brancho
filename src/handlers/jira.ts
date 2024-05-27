@@ -1,4 +1,5 @@
 import { JIRA_BRANCH_CONFIG_KEY } from '../core/constant';
+import { JiraMessageResponse, JiraConfig } from '../core/interface';
 import { formatBranchName, sendMessage } from '../core/utils';
 
 export const jiraHandler = {

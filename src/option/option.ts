@@ -1,5 +1,28 @@
+import {
+  JIRA_BRANCH_CONFIG_KEY,
+  JIRA_TITLE_SHORT_WORD_LIMIT,
+} from '../core/constant';
+import { JiraConfig, JiraTitleLengthType } from '../core/interface';
+
 const getHTMLElementById = (id: string) =>
   document.getElementById(id) as HTMLElement;
+
+const getRadioValue = (name: string) =>
+  Array.from(
+    document.getElementsByName(name) as NodeListOf<HTMLInputElement>
+  ).find((radio) => radio.checked)?.value;
+
+const toggleClass = (
+  element: HTMLElement,
+  className: string,
+  condition: boolean
+) => {
+  if (condition) {
+    element.classList.add(className);
+  } else {
+    element.classList.remove(className);
+  }
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   const mainContent = document.getElementById('mainContent') as HTMLElement;
@@ -8,30 +31,44 @@ document.addEventListener('DOMContentLoaded', () => {
   const issueKeyCaseRadios = document.getElementsByName(
     'issueKeyCase'
   ) as NodeListOf<HTMLInputElement>;
-  const issueSummaryCaseRadios = document.getElementsByName(
-    'issueSummaryCase'
-  ) as NodeListOf<HTMLInputElement>;
+
   const previewElement = document.getElementById('preview') as HTMLElement;
-  const issueSummaryBtn = document.getElementById(
-    'issueSummaryBtn'
-  ) as HTMLElement;
-  const issueKeyUpper = document.getElementById(
-    'issueSummaryUpper'
+  const issueTitleBtn = document.getElementById('issueTitleBtn') as HTMLElement;
+
+  // issue title options
+  const issueTitleCaseRadios = document.getElementsByName(
+    'issueTitleCase'
+  ) as NodeListOf<HTMLInputElement>;
+
+  const issueTitleUpper = document.getElementById(
+    'issueTitleUpper'
   ) as HTMLInputElement;
-  const issueKeyLower = document.getElementById(
-    'issueSummaryLower'
+  const issueTitleLower = document.getElementById(
+    'issueTitleLower'
   ) as HTMLInputElement;
+
+  const issueTitleLengthRadios = document.getElementsByName(
+    'issueTitleLength'
+  ) as NodeListOf<HTMLInputElement>;
+
+  const issueTitleFull = document.getElementById(
+    'issueTitleFull'
+  ) as HTMLInputElement;
+  const issueTitleShort = document.getElementById(
+    'issueTitleShort'
+  ) as HTMLInputElement;
+  // -------
+
   const saveBtn = document.getElementById('save') as HTMLElement;
   const loader = document.querySelector('.loader') as HTMLElement;
 
   let issueTitleSelected = false;
-  let savedIssueSummaryCase: string | undefined = undefined;
+  let savedIssueTitleCase: string | undefined = undefined;
+  let savedIssueTitleLength: string | undefined = undefined;
 
   // Show the loading message and hide the main content
   loading.style.display = 'block';
   mainContent.classList.add('hidden');
-
-  const JIRA_BRANCH_CONFIG_KEY = 'jiraBranchConfig';
 
   // Load the saved configuration
   chrome.storage.sync.get([JIRA_BRANCH_CONFIG_KEY], (result) => {
@@ -39,17 +76,23 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('No configuration found');
       return;
     }
-    const config = result[JIRA_BRANCH_CONFIG_KEY];
-    if (config.issueCase) {
+    const config = result[JIRA_BRANCH_CONFIG_KEY] as JiraConfig;
+    if (config.keyCase) {
       Array.from(issueKeyCaseRadios).forEach((radio) => {
-        if (radio.value === config.issueCase) {
+        if (radio.value === config.keyCase) {
           radio.checked = true;
         }
       });
     }
     if (config.titleCase) {
-      Array.from(issueSummaryCaseRadios).forEach((radio) => {
+      Array.from(issueTitleCaseRadios).forEach((radio) => {
         if (radio.value === config.titleCase) {
+          radio.checked = true;
+        }
+      });
+
+      Array.from(issueTitleLengthRadios).forEach((radio) => {
+        if (radio.value === config.titleLength) {
           radio.checked = true;
         }
       });
@@ -57,11 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (config.includeTitle) {
       issueTitleSelected = config.includeTitle;
-      issueSummaryBtn.classList.toggle('selected');
+      issueTitleBtn.classList.toggle('selected');
     }
 
     if (config.includeTitle) {
-      issueSummaryBtn.classList.add('selected');
+      issueTitleBtn.classList.add('selected');
     } else {
       toggleIssueTitleCaseOptions(false);
     }
@@ -73,96 +116,147 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const updatePreview = () => {
     let issueKey = 'ABC-3504';
-    let issueSummary = '-new-adcampaign-endpoint';
+    let delimiter = '-';
+    let issueTitle = 'foo-bar-tico-baz-pants-quz-ufo';
 
     const selectedIssueKeyCase = Array.from(issueKeyCaseRadios).find(
       (radio) => radio.checked
     )?.value;
-    const selectedIssueSummaryCase = Array.from(issueSummaryCaseRadios).find(
+    const selectedIssueTitleCase = Array.from(issueTitleCaseRadios).find(
+      (radio) => radio.checked
+    )?.value;
+
+    const selectedIssueTitleLength = Array.from(issueTitleLengthRadios).find(
       (radio) => radio.checked
     )?.value;
 
     if (selectedIssueKeyCase === 'upper') issueKey = issueKey.toUpperCase();
     if (selectedIssueKeyCase === 'lower') issueKey = issueKey.toLowerCase();
-    if (selectedIssueSummaryCase === 'upper')
-      issueSummary = issueSummary.toUpperCase();
-    if (selectedIssueSummaryCase === 'lower')
-      issueSummary = issueSummary.toLowerCase();
 
-    if (!issueSummaryBtn.classList.contains('selected')) {
-      issueSummary = '';
+    if (selectedIssueTitleCase === 'upper')
+      issueTitle = issueTitle.toUpperCase();
+    if (selectedIssueTitleCase === 'lower')
+      issueTitle = issueTitle.toLowerCase();
+
+    if (selectedIssueTitleLength === JiraTitleLengthType.SHORT) {
+      issueTitle = issueTitle
+        .split('-')
+        .slice(0, JIRA_TITLE_SHORT_WORD_LIMIT)
+        .join('-');
     }
-    previewElement.textContent = `${issueKey}${issueSummary}`;
+    if (selectedIssueTitleLength === 'full') {
+      issueTitle = issueTitle;
+    }
+
+    if (!issueTitleBtn.classList.contains('selected')) {
+      delimiter = '';
+      issueTitle = '';
+    }
+    previewElement.textContent = `${issueKey}${delimiter}${issueTitle}`;
   };
 
   const toggleIssueTitleCaseOptions = (enable: boolean) => {
     if (!enable) {
-      savedIssueSummaryCase = Array.from(issueSummaryCaseRadios).find(
+      savedIssueTitleCase = Array.from(issueTitleCaseRadios).find(
         (radio) => radio.checked
       )?.value;
-      issueKeyUpper.checked = false;
-      issueKeyLower.checked = false;
-    } else if (typeof savedIssueSummaryCase === 'string') {
-      const radioToRestore = Array.from(issueSummaryCaseRadios).find(
-        (radio) => radio.value === savedIssueSummaryCase
+      issueTitleUpper.checked = false;
+      issueTitleLower.checked = false;
+    } else if (typeof savedIssueTitleCase === 'string') {
+      const radioToRestore = Array.from(issueTitleCaseRadios).find(
+        (radio) => radio.value === savedIssueTitleCase
       );
       if (radioToRestore) radioToRestore.checked = true;
     }
 
-    issueKeyUpper.disabled = !enable;
-    issueKeyLower.disabled = !enable;
+    issueTitleUpper.disabled = !enable;
+    issueTitleLower.disabled = !enable;
   };
 
-  issueSummaryBtn.addEventListener('click', () => {
+  const toggleIssueTitleLengthOptions = (enable: boolean) => {
+    if (!enable) {
+      savedIssueTitleLength = Array.from(issueTitleLengthRadios).find(
+        (radio) => radio.checked
+      )?.value;
+      issueTitleFull.checked = false;
+      issueTitleShort.checked = false;
+    } else if (typeof savedIssueTitleLength === 'string') {
+      const radioToRestore = Array.from(issueTitleLengthRadios).find(
+        (radio) => radio.value === savedIssueTitleLength
+      );
+      if (radioToRestore) radioToRestore.checked = true;
+    }
+
+    issueTitleFull.disabled = !enable;
+    issueTitleShort.disabled = !enable;
+  };
+
+  issueTitleBtn.addEventListener('click', () => {
     issueTitleSelected = !issueTitleSelected;
     toggleIssueTitleCaseOptions(issueTitleSelected);
+    toggleIssueTitleLengthOptions(issueTitleSelected);
 
-    issueSummaryBtn.classList.toggle('selected');
+    issueTitleBtn.classList.toggle('selected');
     updatePreview();
   });
 
   saveBtn.addEventListener('click', () => {
+    // display loader
+    loader.classList.add('active');
+
     const selectedIssueKeyCase = Array.from(issueKeyCaseRadios).find(
       (radio) => radio.checked
     )?.value;
-    const selectedIssueSummaryCase = Array.from(issueSummaryCaseRadios).find(
+    const selectedIssueTitleCase = Array.from(issueTitleCaseRadios).find(
+      (radio) => radio.checked
+    )?.value;
+    const selectedIssueTitleLength = Array.from(issueTitleLengthRadios).find(
       (radio) => radio.checked
     )?.value;
 
-    const isIssueSummaryEnabled =
-      issueSummaryBtn.classList.contains('selected');
+    const isIssueTitleEnabled = issueTitleBtn.classList.contains('selected');
 
     if (!selectedIssueKeyCase) {
       alert('Please select a case option for the issue key');
       return;
     }
 
-    if (isIssueSummaryEnabled) {
-      if (!selectedIssueSummaryCase) {
-        alert('Please select a case option for the issue summary');
+    if (isIssueTitleEnabled) {
+      if (!selectedIssueTitleCase) {
+        alert('Please select a case option for the issue title');
+        return;
+      }
+
+      if (!selectedIssueTitleLength) {
+        alert('Please select a length option for the issue title');
         return;
       }
     }
 
-    const config = {
-      issueCase: selectedIssueKeyCase,
-      titleCase: selectedIssueSummaryCase,
-      includeTitle: isIssueSummaryEnabled,
+    const config: JiraConfig = {
+      keyCase: selectedIssueKeyCase,
+      titleCase: selectedIssueTitleCase ?? 'lower',
+      titleLength: selectedIssueTitleLength ?? 'full',
+      includeTitle: isIssueTitleEnabled,
     };
-    loader.classList.add('active');
 
     chrome.storage.sync.set({ [JIRA_BRANCH_CONFIG_KEY]: config }, function () {
       console.log('Configuration saved');
+      // add extra delay to show the loader
       setTimeout(() => {
         loader.classList.remove('active');
-      }, 500);
+      }, 300);
     });
   });
 
   issueKeyCaseRadios.forEach((radio) =>
     radio.addEventListener('change', updatePreview)
   );
-  issueSummaryCaseRadios.forEach((radio) =>
+  issueTitleCaseRadios.forEach((radio) =>
+    radio.addEventListener('change', updatePreview)
+  );
+
+  issueTitleLengthRadios.forEach((radio) =>
     radio.addEventListener('change', updatePreview)
   );
 

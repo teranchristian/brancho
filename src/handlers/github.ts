@@ -1,3 +1,4 @@
+import { GithubMessageResponse } from '../core/interface';
 import { sendMessage } from '../core/utils';
 
 export const githubHandler = {
