@@ -9,4 +9,7 @@ export const DEFAULT_JIRA_CONFIG: JiraConfig = {
 
 export const JIRA_TITLE_SHORT_WORD_LIMIT = 5;
 
+export const HISTORY_LIMIT = 10;
+
 export const JIRA_BRANCH_CONFIG_KEY = 'jiraBranchConfig';
+export const BRANCHO_HISTORY_KEY = 'branchoHistory1';

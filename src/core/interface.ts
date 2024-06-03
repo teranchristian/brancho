@@ -6,11 +6,25 @@ export interface JiraConfig {
 }
 
 export interface JiraMessageResponse {
-  issue: string;
   title: string;
 }
 
+export interface BranchoItem {
+  issueKey: string;
+  title: string;
+  branchName: string;
+  date: string;
+  type: string;
+  url: string;
+}
+export interface RunnerResponse {
+  issueKey: string;
+  title: string;
+  branchName: string;
+}
+
 export interface GithubMessageResponse {
+  title: string;
   branchName: string;
 }
 

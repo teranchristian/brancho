@@ -30,8 +30,17 @@
     }
   ],
   "options_page": "option/index.html",
-  "action": {},
+  "action": {
+    "default_popup": "popup/index.html"
+  },
   "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+S",
+        "windows": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      }
+    },
     "copy-branch-name": {
       "description": "Copy branch",
       "suggested_key": {

@@ -25,6 +25,7 @@ var options = {
     background: path.join(__dirname, 'src', 'background.ts'),
     content: path.join(__dirname, 'src', 'content.ts'),
     option: path.join(__dirname, 'src/option', 'option.ts'),
+    popup: path.join(__dirname, 'src/popup', 'popup.ts'),
   },
   output: {
     globalObject: 'this',
@@ -33,6 +34,9 @@ var options = {
       const name = pathData.chunk.name;
       if (name === 'option') {
         return 'option/[name].js';
+      }
+      if (name === 'popup') {
+        return 'popup/[name].js';
       }
       return '[name].js';
     },
@@ -115,10 +119,6 @@ var options = {
             );
           },
         },
-        // {
-        //   from: 'src/content.ts',
-        //   to: path.join(__dirname, 'dist', 'content.js'),
-        // },
         {
           from: 'img',
           to: path.join(__dirname, 'dist', 'img'),
@@ -126,6 +126,13 @@ var options = {
         {
           from: 'src/option',
           to: path.join(__dirname, 'dist', 'option'),
+          globOptions: {
+            ignore: ['**/*.ts'],
+          },
+        },
+        {
+          from: 'src/popup',
+          to: path.join(__dirname, 'dist', 'popup'),
           globOptions: {
             ignore: ['**/*.ts'],
           },
