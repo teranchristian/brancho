@@ -3,7 +3,6 @@ var webpack = require('webpack'),
   env = require('./scripts/env'),
   { CleanWebpackPlugin } = require('clean-webpack-plugin'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
-  HtmlWebpackPlugin = require('html-webpack-plugin'),
   WriteFilePlugin = require('write-file-webpack-plugin');
 
 var fileExtensions = [
@@ -25,6 +24,7 @@ var options = {
     background: path.join(__dirname, 'src', 'background.ts'),
     content: path.join(__dirname, 'src', 'content.ts'),
     option: path.join(__dirname, 'src/option', 'option.ts'),
+    popup: path.join(__dirname, 'src/popup', 'popup.ts'),
   },
   output: {
     globalObject: 'this',
@@ -34,35 +34,14 @@ var options = {
       if (name === 'option') {
         return 'option/[name].js';
       }
+      if (name === 'popup') {
+        return 'popup/[name].js';
+      }
       return '[name].js';
     },
   },
   module: {
     rules: [
-      // {
-      //     // look for .css or .scss files
-      //     test: /\.(css|scss)$/,
-      //     // in the `src` directory
-      //     use: [
-      //         {
-      //             loader: 'style-loader',
-      //         },
-      //         {
-      //             loader: 'css-loader',
-      //         },
-      //         {
-      //             loader: 'sass-loader',
-      //             options: {
-      //                 sourceMap: true,
-      //             },
-      //         },
-      //     ],
-      // },
-      // {
-      //     test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
-      //     loader: 'file-loader?name=[name].[ext]',
-      //     exclude: /node_modules/,
-      // },
       {
         test: /\.html$/,
         loader: 'html-loader',
@@ -115,10 +94,6 @@ var options = {
             );
           },
         },
-        // {
-        //   from: 'src/content.ts',
-        //   to: path.join(__dirname, 'dist', 'content.js'),
-        // },
         {
           from: 'img',
           to: path.join(__dirname, 'dist', 'img'),
@@ -130,13 +105,15 @@ var options = {
             ignore: ['**/*.ts'],
           },
         },
+        {
+          from: 'src/popup',
+          to: path.join(__dirname, 'dist', 'popup'),
+          globOptions: {
+            ignore: ['**/*.ts'],
+          },
+        },
       ],
     }),
-    // new HtmlWebpackPlugin({
-    //   template: path.join(__dirname, 'src/option', 'index.html'),
-    //   filename: 'index.html',
-    //   chunks: ['option'],
-    // }),
     new WriteFilePlugin(),
   ],
 };

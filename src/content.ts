@@ -1,28 +1,39 @@
 const handleJiraTicketTitle = (sendResponse: any) => {
   const basedSelector = 'issue.views.issue-base.foundation';
   const titleSelector = `[data-testid="${basedSelector}.summary.heading"]`;
-  const issueSelector = `[data-testid="${basedSelector}.breadcrumbs.current-issue.item"] > span`;
+  const authorSelector = `[data-testid="issue.views.field.user.assignee.name.wrapper"] > span`;
 
-  const spanElement = document.querySelector(issueSelector) as HTMLSpanElement;
-  const divElement = document.querySelector(titleSelector) as HTMLDivElement;
+  const titleElement = document.querySelector(titleSelector) as HTMLDivElement;
+  const authorElement = document.querySelector(
+    authorSelector
+  ) as HTMLSpanElement;
 
-  const issue = spanElement?.innerText;
-  let title = divElement?.innerText;
-  if (!issue || !title) {
+  let title = titleElement?.innerText;
+  let author = authorElement?.innerText;
+  if (!title || !author) {
     sendResponse(null);
     return;
   }
   sendResponse({
-    issue,
     title,
+    author,
   });
 };
 
 const handleGitHubTicketTitle = (sendResponse: any): void => {
   const branchSelector = 'clipboard-copy[aria-label="Copy"]';
+  const titleSelector = '.js-issue-title.markdown-title';
+  const authorSelector = '[data-hovercard-type="user"]';
   const branchName =
     document.querySelector(branchSelector)?.getAttribute('value') ?? null;
-  sendResponse({ branchName });
+  const author = document.querySelector(authorSelector)?.textContent ?? null;
+  const title = document.querySelector(titleSelector)?.textContent ?? null;
+
+  if (!branchName || !title || !author) {
+    sendResponse(null);
+    return;
+  }
+  sendResponse({ branchName, title, author });
 };
 
 const handlers: {
