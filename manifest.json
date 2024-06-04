@@ -1,8 +1,9 @@
 {
   "name": "Brancho",
   "description": "makes a branch name out of a jira card and copy it to the clipboard",
-  "version": "6.0",
+  "version": "7.0",
   "manifest_version": 3,
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlu/9ggwV68pJuew8jeZH0O+mxPJBp2bAUCpfT0X4ySPUBgi2LvOE1LiNZHk/I0eIm74TS7ezWQ7wbdNv2VD+myQZBu7PCbapHW7OQfAmFBsMiPQQK0MQnHQKWKsj1pj0d8TwIvlX2Ou+M+LwMV9OBeFPKuTty/AI2y0ne+MxDHsGOyd6OGJOeKgv9X2FrdhY7wiQQNjVsm3YNC6NxX+D500YVrd9WBmhmJdwOuRmzIn5ybJt3XEqOYIGnkqbXLzEYeb67JDCwnWOkd0mzsHHK22D3y/Bv0TgBhVNsgW80pyMty+XsdMu9q/U5GyNTa76g7rrcH0hr8I9fdTNvHhtUQIDAQAB",
   "icons": {
     "16": "img/icon16.png",
     "48": "img/icon48.png",

@@ -13,9 +13,6 @@ export const jiraHandler = {
           if (!branchConfig || !response) {
             return resolve(null);
           }
-          // issue
-          // title
-          // branchName
           const branchName = formatBranchName(
             issueKey,
             response.title,

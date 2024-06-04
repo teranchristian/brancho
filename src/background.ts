@@ -40,18 +40,11 @@ const commandCopyBranchName = () => {
         pushNotification('Error', 'Branch name not found');
         return;
       }
-      console.log(
-        '-->',
-        url,
-        handler.issueKey,
-        response.title,
-        response.branchName
-      );
       const item: BranchoItem = {
         issueKey: handler.issueKey,
         title: response.title,
         branchName: response.branchName,
-        date: getDateNow(),
+        date: new Date().toString(),
         type: handler.name,
         url,
       };

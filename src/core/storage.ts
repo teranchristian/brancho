@@ -34,16 +34,12 @@ export const addToBranchoHistory = (newBrancho: BranchoItem) => {
     let branchoHistory = result[BRANCHO_HISTORY_KEY] as
       | BranchoItem[]
       | undefined;
-    console.log('branchoHistory', branchoHistory);
     if (!branchoHistory) {
       branchoHistory = [];
     }
     const updatedHistory = branchoHistory.filter(
       (item) => item.issueKey !== newBrancho.issueKey
     );
-    // debugger;
-    console.log('updatedHistory', updatedHistory);
-
     updatedHistory.unshift(newBrancho);
 
     const newHistory = updatedHistory.slice(0, 10);

@@ -3,7 +3,6 @@ var webpack = require('webpack'),
   env = require('./scripts/env'),
   { CleanWebpackPlugin } = require('clean-webpack-plugin'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
-  HtmlWebpackPlugin = require('html-webpack-plugin'),
   WriteFilePlugin = require('write-file-webpack-plugin');
 
 var fileExtensions = [
@@ -43,30 +42,6 @@ var options = {
   },
   module: {
     rules: [
-      // {
-      //     // look for .css or .scss files
-      //     test: /\.(css|scss)$/,
-      //     // in the `src` directory
-      //     use: [
-      //         {
-      //             loader: 'style-loader',
-      //         },
-      //         {
-      //             loader: 'css-loader',
-      //         },
-      //         {
-      //             loader: 'sass-loader',
-      //             options: {
-      //                 sourceMap: true,
-      //             },
-      //         },
-      //     ],
-      // },
-      // {
-      //     test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
-      //     loader: 'file-loader?name=[name].[ext]',
-      //     exclude: /node_modules/,
-      // },
       {
         test: /\.html$/,
         loader: 'html-loader',
@@ -139,11 +114,6 @@ var options = {
         },
       ],
     }),
-    // new HtmlWebpackPlugin({
-    //   template: path.join(__dirname, 'src/option', 'index.html'),
-    //   filename: 'index.html',
-    //   chunks: ['option'],
-    // }),
     new WriteFilePlugin(),
   ],
 };
