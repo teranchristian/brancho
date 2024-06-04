@@ -1,0 +1,150 @@
+.popup-wrapper {
+  margin: 0;
+  overflow: hidden;
+  width: 348px;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  background-color: #f4f5f7;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 450px;
+  margin: 0;
+  padding: 10px 15px 10px 10px;
+}
+.container {
+  width: 379px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.header {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.search-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 15px;
+  width: 100%;
+}
+.search-input {
+  width: calc(100% - 30px);
+  border: 1px solid #ccc;
+  padding: 8px 30px 8px 5px;
+  border-radius: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.clear-button {
+  position: absolute;
+  right: 10px;
+  font-size: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.search-input:focus {
+  border: 1px solid #ccc;
+  outline-style: none;
+  box-shadow: none;
+}
+
+.card-container {
+  max-height: 420px; /* Adjusted to show 4 cards */
+  overflow-y: auto;
+}
+.card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 7px;
+  max-width: calc(100% - 20px);
+  width: calc(100% - 20px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* border: 1px solid rgba(0, 0, 0, 0.1) k; */
+  margin-bottom: 5px;
+  transition: transform 0.2s;
+  border-left: 6px solid;
+  position: relative;
+}
+
+.card:hover {
+  cursor: pointer;
+  background-color: #f4f5f7; /* Light grey background on hover */
+}
+
+.card .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.card .header .date,
+.card .header .type {
+  font-size: 0.85em;
+  color: #7a869a;
+}
+.card .header .type {
+  display: flex;
+  align-items: center;
+}
+.card .header .type img {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+}
+.card .link a {
+  color: inherit;
+  text-decoration: none;
+  color: #0c66e4;
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.card .link {
+  margin-bottom: 2px;
+}
+
+.card .link a:hover {
+  text-decoration: underline;
+}
+.card .title {
+  font-size: 1em;
+  font-weight: bold;
+  color: #172b4d;
+  /* margin-bottom: 12px; */
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* max number of lines to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.jira-card {
+  border-color: #0052cc;
+}
+.jira-card .link a {
+  color: #0052cc;
+}
+.github-card {
+  border-color: #24292e;
+}
+.github-card .link a {
+  color: #0366d6;
+}
+
+.empty-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #7a869a;
+}

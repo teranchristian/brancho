@@ -4,10 +4,12 @@ import { pushNotification } from './core/notification';
 import {
   executeContentScript,
   getActiveTab,
+  getDateNow,
   handleRuntimeError,
 } from './core/utils';
 import { getHandlerNameForUrl } from './handlers/handler';
-import { setDefaultConfig } from './core/storage';
+import { addToBranchoHistory, setDefaultConfig } from './core/storage';
+import { BranchoItem } from './core/interface';
 
 chrome.runtime.onMessage.addListener((request) => {
   const { type } = request;
@@ -33,12 +35,21 @@ const commandCopyBranchName = () => {
 
     executeContentScript(tabId, async () => {
       handleRuntimeError(tabId);
-      const branchName = await handler.runner(tabId);
-      if (!branchName) {
+      const response = await handler.runner(tabId, handler.issueKey);
+      if (!response) {
         pushNotification('Error', 'Branch name not found');
         return;
       }
-      copyBranchNameToClipboard(branchName, tabId);
+      const item: BranchoItem = {
+        issueKey: handler.issueKey,
+        title: response.title,
+        branchName: response.branchName,
+        date: new Date().toString(),
+        type: handler.name,
+        url,
+      };
+      addToBranchoHistory(item);
+      copyBranchNameToClipboard(response.branchName, tabId);
     });
   });
 };
