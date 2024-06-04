@@ -46,6 +46,7 @@ const commandCopyBranchName = () => {
         branchName: response.branchName,
         date: new Date().toString(),
         type: handler.name,
+        author: response.author,
         url,
       };
       addToBranchoHistory(item);

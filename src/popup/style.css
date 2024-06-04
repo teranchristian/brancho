@@ -119,13 +119,19 @@ body {
   font-size: 1em;
   font-weight: bold;
   color: #172b4d;
-  /* margin-bottom: 12px; */
+  margin-bottom: 2px;
   display: -webkit-box;
   -webkit-line-clamp: 1; /* max number of lines to show */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.card .author {
+  font-size: 0.9em;
+  color: #7a869a;
+}
+
 .jira-card {
   border-color: #0052cc;
 }

@@ -15,6 +15,7 @@ const fuseOptions = {
     { name: 'title', weight: 2 },
     'type',
     'date',
+    'author',
   ],
 };
 
@@ -37,8 +38,6 @@ const formatDate = (d: string) => {
     minute: 'numeric',
     hour12: true,
   } as const;
-  debugger;
-
   // Using toLocaleString and custom formatting to get the exact format
   const dateString = date.toLocaleString('en-US', options);
   const [monthDay, yearTime] = dateString.split(', ');
@@ -91,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <a href="#" style="color: ${linkColor}">${item.branchName}</a>
         </div>
         <div class="title">${item.title}</div>
+        <div class="author">${item.author}</div>
       `;
 
       cardElement.addEventListener('click', () => {

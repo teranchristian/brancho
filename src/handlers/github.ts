@@ -8,14 +8,16 @@ export const githubHandler = {
   runner: (tabId: number, issueKey: string): Promise<RunnerResponse | null> => {
     return new Promise((resolve) => {
       sendMessage<GithubMessageResponse>(tabId, 'github', (response) => {
-        const branchName = response?.branchName;
-        const title = response?.title;
-        if (!branchName || !title) {
+        if (!response) {
           return resolve(null);
         }
+        const branchName = response.branchName;
+        const title = response.title;
+        const author = response.author;
         return resolve({
           issueKey,
           title,
+          author,
           branchName,
         });
       });

@@ -21,6 +21,7 @@ export const jiraHandler = {
           return resolve({
             issueKey,
             title: response.title,
+            author: response.author,
             branchName,
           });
         });
