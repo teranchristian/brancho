@@ -1,11 +1,14 @@
-var webpack = require('webpack'),
-  path = require('path'),
-  env = require('./scripts/env'),
-  { CleanWebpackPlugin } = require('clean-webpack-plugin'),
-  CopyWebpackPlugin = require('copy-webpack-plugin'),
-  WriteFilePlugin = require('write-file-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const env = require('./scripts/env');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WriteFilePlugin = require('write-file-webpack-plugin');
+const ZipPlugin = require('zip-webpack-plugin');
 
-var fileExtensions = [
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+const fileExtensions = [
   'jpg',
   'jpeg',
   'png',
@@ -18,7 +21,71 @@ var fileExtensions = [
   'woff2',
 ];
 
-var options = {
+const plugins = [
+  new webpack.ProgressPlugin(),
+  // clean the build folder
+  new CleanWebpackPlugin({
+    verbose: true,
+    cleanStaleWebpackAssets: false,
+  }),
+  // expose and write the allowed env vars on the compiled bundle
+  new webpack.EnvironmentPlugin(['NODE_ENV']),
+  new CopyWebpackPlugin({
+    patterns: [
+      {
+        from: 'manifest.json',
+        to: path.join(__dirname, 'dist'),
+        force: true,
+        transform: function (content, path) {
+          // generates the manifest file using the package.json informations
+          return Buffer.from(
+            JSON.stringify(
+              {
+                description: process.env.npm_package_description,
+                version: process.env.npm_package_version,
+                ...JSON.parse(content.toString()),
+              },
+              null,
+              '\t'
+            )
+          );
+        },
+      },
+      {
+        from: 'img',
+        to: path.join(__dirname, 'dist', 'img'),
+      },
+      {
+        from: 'src/option',
+        to: path.join(__dirname, 'dist', 'option'),
+        globOptions: {
+          ignore: ['**/*.ts'],
+        },
+      },
+      {
+        from: 'src/popup',
+        to: path.join(__dirname, 'dist', 'popup'),
+        globOptions: {
+          ignore: ['**/*.ts'],
+        },
+      },
+    ],
+  }),
+  new WriteFilePlugin(),
+];
+
+if (!isDevelopment) {
+  plugins.push(
+    new ZipPlugin({
+      filename: 'brancho.zip',
+      path: path.resolve(__dirname, 'build'),
+      pathPrefix: '',
+    })
+  );
+}
+
+
+module.exports = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
     background: path.join(__dirname, 'src', 'background.ts'),
@@ -64,62 +131,8 @@ var options = {
       .map((extension) => '.' + extension)
       .concat(['.jsx', '.js', '.css', '.ts']),
   },
-  plugins: [
-    new webpack.ProgressPlugin(),
-    // clean the build folder
-    new CleanWebpackPlugin({
-      verbose: true,
-      cleanStaleWebpackAssets: false,
-    }),
-    // expose and write the allowed env vars on the compiled bundle
-    new webpack.EnvironmentPlugin(['NODE_ENV']),
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: 'manifest.json',
-          to: path.join(__dirname, 'dist'),
-          force: true,
-          transform: function (content, path) {
-            // generates the manifest file using the package.json informations
-            return Buffer.from(
-              JSON.stringify(
-                {
-                  description: process.env.npm_package_description,
-                  version: process.env.npm_package_version,
-                  ...JSON.parse(content.toString()),
-                },
-                null,
-                '\t'
-              )
-            );
-          },
-        },
-        {
-          from: 'img',
-          to: path.join(__dirname, 'dist', 'img'),
-        },
-        {
-          from: 'src/option',
-          to: path.join(__dirname, 'dist', 'option'),
-          globOptions: {
-            ignore: ['**/*.ts'],
-          },
-        },
-        {
-          from: 'src/popup',
-          to: path.join(__dirname, 'dist', 'popup'),
-          globOptions: {
-            ignore: ['**/*.ts'],
-          },
-        },
-      ],
-    }),
-    new WriteFilePlugin(),
-  ],
+  plugins,
+  devtool: isDevelopment ? 'cheap-module-source-map' : false,
 };
 
-if (env.NODE_ENV === 'development') {
-  options.devtool = 'cheap-module-source-map';
-}
 
-module.exports = options;
