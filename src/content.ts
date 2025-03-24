@@ -1,7 +1,7 @@
 const handleJiraTicketTitle = (sendResponse: any) => {
   const basedSelector = 'issue.views.issue-base.foundation';
   const titleSelector = `[data-testid="${basedSelector}.summary.heading"]`;
-  const authorSelector = `[data-testid="issue.views.field.user.assignee.name.wrapper"] > span`;
+  const authorSelector = `[data-testid="issue.views.field.user.assignee"]  span > span`;
 
   const titleElement = document.querySelector(titleSelector) as HTMLDivElement;
   const authorElement = document.querySelector(
@@ -11,6 +11,7 @@ const handleJiraTicketTitle = (sendResponse: any) => {
   let title = titleElement?.innerText;
   let author = authorElement?.innerText;
   if (!title || !author) {
+    console.warn('unable to find title/author')
     sendResponse(null);
     return;
   }
@@ -30,6 +31,7 @@ const handleGitHubTicketTitle = (sendResponse: any): void => {
   const title = document.querySelector(titleSelector)?.textContent ?? null;
 
   if (!branchName || !title || !author) {
+    console.warn('unable to find branch/title/author')
     sendResponse(null);
     return;
   }

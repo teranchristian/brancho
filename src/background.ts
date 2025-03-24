@@ -1,10 +1,8 @@
-import { jiraHandler } from './handlers/jira';
 import { copyBranchNameToClipboard } from './core/copyBranch';
 import { pushNotification } from './core/notification';
 import {
   executeContentScript,
   getActiveTab,
-  getDateNow,
   handleRuntimeError,
 } from './core/utils';
 import { getHandlerNameForUrl } from './handlers/handler';
