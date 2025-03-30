@@ -1,59 +1,56 @@
-import { copyBranchNameToClipboard } from './core/copyBranch';
-import { pushNotification } from './core/notification';
+import { copyBranchNameToClipboard } from 'core/copyBranch';
+import { pushNotification } from 'core/notification';
 import {
   executeContentScript,
   getActiveTab,
   handleRuntimeError,
-} from './core/utils';
-import { getHandlerNameForUrl } from './handlers/handler';
-import { addToBranchoHistory, setDefaultConfig } from './core/storage';
-import { BranchoItem } from './core/interface';
-
-chrome.runtime.onMessage.addListener((request) => {
-  const { type } = request;
-  switch (type) {
-    case 'branchCopied':
-      pushNotification('Branch name on clipboard', request.branchName);
-      break;
-    case 'clipboardError':
-      pushNotification('Error', 'Document is not focused');
-      break;
-    default:
-      console.warn(`Unhandled request type: ${type}`);
-  }
-});
+  sendMessageToContentScript,
+} from 'core/utils';
+import { getHandlerNameForUrl } from 'handlers/handler';
+import { addToBranchoHistory, setDefaultConfig } from 'core/storage';
+import { BranchoItem } from 'core/interface';
 
 const commandCopyBranchName = () => {
   getActiveTab((url, tabId) => {
     const handler = getHandlerNameForUrl(url);
     if (!handler) {
-      console.warn(`Brancho: No handler found for url: ${url}`);
+      console.error(`[Brancho] No handler found for url: ${url}`);
       return;
     }
 
     executeContentScript(tabId, async () => {
-      handleRuntimeError(tabId);
-      const response = await handler.runner(tabId, handler.issueKey);
-      if (!response) {
-        pushNotification('Error', 'Branch name not found');
-        return;
+      try {
+        handleRuntimeError(tabId);
+        const response = await handler.runner(tabId, handler.issueKey);
+        if (!response) {
+          pushNotification('Error', 'Branch name not found');
+          return;
+        }
+        const item: BranchoItem = {
+          issueKey: handler.issueKey,
+          title: response.title,
+          branchName: response.branchName,
+          date: new Date().toString(),
+          type: handler.name,
+          author: response.author,
+          url,
+        };
+        addToBranchoHistory(item);
+        await copyBranchNameToClipboard(response.branchName, tabId)
+        sendMessageToContentScript(tabId, 'branch-notification', response.branchName, (response) => {
+          if (!response) {
+            console.log('[brancho] unable to display copy branch notification')
+          }
+        })
+      } catch (error) {
+        console.log('An error occurred:', error);
       }
-      const item: BranchoItem = {
-        issueKey: handler.issueKey,
-        title: response.title,
-        branchName: response.branchName,
-        date: new Date().toString(),
-        type: handler.name,
-        author: response.author,
-        url,
-      };
-      addToBranchoHistory(item);
-      copyBranchNameToClipboard(response.branchName, tabId);
     });
   });
 };
 
 chrome.commands.onCommand.addListener((command: string) => {
+  // Listen for the "copy-branch-name" shortcut command
   if (command === 'copy-branch-name') {
     commandCopyBranchName();
   }

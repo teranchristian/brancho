@@ -1,4 +1,4 @@
-import { JiraConfig } from './interface';
+import { JiraConfig } from 'core/interface';
 
 export const DEFAULT_JIRA_CONFIG: JiraConfig = {
   keyCase: 'upper',
@@ -13,3 +13,6 @@ export const HISTORY_LIMIT = 20;
 
 export const JIRA_BRANCH_CONFIG_KEY = 'jiraBranchConfig';
 export const BRANCHO_HISTORY_KEY = 'branchoHistory';
+
+export const JIRA_REGEX = /.*\.(?:atlassian|jira).*?[?&]selectedIssue=([A-Z][A-Z0-9]+-\d+)/i
+export const GITHUB_REGEX = /^https:\/\/github\.com\/[^\/]+\/[^\/]+\/pull\/(\d+)(?:\/.*)?/i

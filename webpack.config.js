@@ -5,6 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
+const packageJson = require('./package.json')
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -37,18 +38,10 @@ const plugins = [
         to: path.join(__dirname, 'dist'),
         force: true,
         transform: function (content, path) {
-          // generates the manifest file using the package.json informations
-          return Buffer.from(
-            JSON.stringify(
-              {
-                description: process.env.npm_package_description,
-                version: process.env.npm_package_version,
-                ...JSON.parse(content.toString()),
-              },
-              null,
-              '\t'
-            )
-          );
+          const manifest = JSON.parse(content.toString());
+          manifest.version = packageJson.version;
+          manifest.description = packageJson.description;
+          return Buffer.from(JSON.stringify(manifest, null, 2));
         },
       },
       {
@@ -90,7 +83,7 @@ module.exports = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
     background: path.join(__dirname, 'src', 'background.ts'),
-    content: path.join(__dirname, 'src', 'content.ts'),
+    content: path.join(__dirname, 'src', 'content/content.ts'),
     option: path.join(__dirname, 'src/option', 'option.ts'),
     popup: path.join(__dirname, 'src/popup', 'popup.ts'),
   },
@@ -128,6 +121,11 @@ module.exports = {
     ],
   },
   resolve: {
+     alias: {
+      core: path.resolve(__dirname, 'src/core'),
+      handlers: path.resolve(__dirname, 'src/handlers'),
+      utils: path.resolve(__dirname, 'src/utils'),
+    },
     extensions: fileExtensions
       .map((extension) => '.' + extension)
       .concat(['.jsx', '.js', '.css', '.ts']),

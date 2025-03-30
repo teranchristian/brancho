@@ -1,0 +1,87 @@
+<div id="brancho-extension-notification">
+  <div id="brancho-notification-header">
+    <img id="brancho-notification-icon" src="#" alt="icon" />
+    <span id="brancho-notification-text">Branch on clipboard!</span>
+  </div>
+  <span id="brancho-branch-name"></span>
+</div>
+
+<style>
+  #brancho-extension-notification {
+    position: fixed;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #F4F4F4 !important;
+    color: #000000 !important;
+    padding: 4px 8px;
+    border-radius: 5px;
+    z-index: 99999999999999999999999 !important;
+    font-size: 16px !important;
+    font-family: Arial, sans-serif !important;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1) !important;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center !important;
+    gap: 1px;
+    animation: slideDown 0.5s ease-out forwards, fadeOut 0.8s forwards 0.8s;
+  }
+
+  #brancho-notification-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  #brancho-notification-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  #brancho-notification-text {
+    text-align: center !important;
+    font-size: 16px !important;
+    color: #000000 !important;
+  }
+
+  #brancho-branch-name {
+    font-size: 14px !important;
+    color: #555555 !important;
+    margin-top: 5px !important;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    max-width: 100% !important;
+    display: block !important;
+  }
+
+  #brancho-branch-name {
+    width: 100% !important;
+    max-width: 350px !important;
+  }
+
+  @keyframes slideDown {
+    0% {
+      top: -50px;
+      opacity: 0;
+    }
+
+    100% {
+      top: 10px;
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    0% {
+      top: 10px;
+      opacity: 1;
+    }
+
+    100% {
+      top: -50px;
+      opacity: 0;
+    }
+  }
+</style>
