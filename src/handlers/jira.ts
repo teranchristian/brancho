@@ -1,14 +1,15 @@
-import { JiraMessageResponse, RunnerResponse } from '../core/interface';
-import { getBranchConfig } from '../core/storage';
-import { formatBranchName, sendMessage } from '../core/utils';
+import { JiraMessageResponse, RunnerResponse } from 'core/interface';
+import { getBranchConfig } from 'core/storage';
+import { formatBranchName, sendMessageToContentScript } from 'core/utils';
+import { JIRA_REGEX } from 'core/constant';
 
 export const jiraHandler = {
   name: 'jira',
   match: (url: string) =>
-    url.match(/.*\.(?:atlassian|jira).*?[?&]selectedIssue=([A-Z][A-Z0-9]+-\d+)/i),
+    url.match(JIRA_REGEX),
   runner: async (tabId: number, issueKey: string): Promise<RunnerResponse | null> => {
     const response = await new Promise<JiraMessageResponse | null>((resolve) => {
-      sendMessage<JiraMessageResponse>(tabId, 'jira', (response) => {
+      sendMessageToContentScript<JiraMessageResponse>(tabId, 'scraping', 'jira', (response) => {
         resolve(response || null);
       });
     });

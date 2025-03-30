@@ -1,13 +1,14 @@
-import { GithubMessageResponse, RunnerResponse } from '../core/interface';
-import { sendMessage } from '../core/utils';
+import { GithubMessageResponse, RunnerResponse } from 'core/interface';
+import { sendMessageToContentScript } from 'core/utils';
+import { GITHUB_REGEX } from 'core/constant';
 
 export const githubHandler = {
   name: 'github',
   match: (url: string) =>
-    url.match(/^https:\/\/github\.com\/[^\/]+\/[^\/]+\/pull\/(\d+)(?:\/.*)?/i),
+    url.match(GITHUB_REGEX),
   runner: (tabId: number, issueKey: string): Promise<RunnerResponse | null> => {
     return new Promise((resolve) => {
-      sendMessage<GithubMessageResponse>(tabId, 'github', (response) => {
+      sendMessageToContentScript<GithubMessageResponse>(tabId, 'scraping', 'github', (response) => {
         if (!response) {
           return resolve(null);
         }

@@ -1,13 +1,14 @@
-import { JIRA_TITLE_SHORT_WORD_LIMIT } from './constant';
-import { JiraConfig, JiraTitleLengthType } from './interface';
+import { JIRA_TITLE_SHORT_WORD_LIMIT } from 'core/constant';
+import { JiraConfig, JiraTitleLengthType } from 'core/interface';
 
-export const sendMessage = <T>(
+export const sendMessageToContentScript = <T>(
   tabId: number,
+  type: string,
   message: string,
-  callback: (res: T | null) => void
+  callback?: (res: T | null) => void
 ) => {
-  chrome.tabs.sendMessage(tabId, { message }, (response) => {
-    if (response) {
+  chrome.tabs.sendMessage(tabId, { type, message }, (response) => {
+    if (response && callback) {
       callback(response);
     }
   });

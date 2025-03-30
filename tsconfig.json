@@ -1,6 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2018",
+     "baseUrl": "src",
+    "paths": {
+      "core/*": ["core/*"], 
+      "handlers/*": ["handlers/*"], 
+      "utils/*": ["utils/*"]
+    },
+    "target": "ES6",
     "allowSyntheticDefaultImports": true,
     "module": "commonjs",
     "strict": true,

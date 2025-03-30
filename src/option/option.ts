@@ -1,7 +1,7 @@
 import {
   JIRA_BRANCH_CONFIG_KEY,
   JIRA_TITLE_SHORT_WORD_LIMIT,
-} from '../core/constant';
+} from 'core/constant';
 import { JiraConfig, JiraTitleLengthType } from '../core/interface';
 import {
   getHTMLElementById,
