@@ -122,9 +122,10 @@ module.exports = {
   },
   resolve: {
      alias: {
-      core: path.resolve(__dirname, 'src/core'),
-      handlers: path.resolve(__dirname, 'src/handlers'),
-      utils: path.resolve(__dirname, 'src/utils'),
+      '@core': path.resolve(__dirname, 'src/core'),
+      '@handlers': path.resolve(__dirname, 'src/handlers'),
+      '@utils': path.resolve(__dirname, 'src/utils'),
+      '@content': path.resolve(__dirname, 'src/content'),
     },
     extensions: fileExtensions
       .map((extension) => '.' + extension)

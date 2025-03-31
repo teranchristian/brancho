@@ -1,8 +1,16 @@
 {
   "name": "brancho",
   "version": "9.0.0",
-  "description": "Brancho lets you quickly generate branch names from Jira tickets and copy them to your clipboard using a keyboard shortcut.\n The same shortcut also works on GitHub pull requests, allowing you to instantly copy the branch name to your clipboard",
+  "description": "Brancho generates and copies branch names from tickets and pull requests to your clipboard with a keyboard shortcut.",
   "main": "index.js",
+  "keywords": [
+    "branch",
+    "git",
+    "jira",
+    "shortcut",
+    "ticket",
+    "automation"
+  ],
   "scripts": {
     "build": "cross-env NODE_ENV=production node scripts/build.js",
     "start": "cross-env NODE_ENV=development node scripts/webpack.js"

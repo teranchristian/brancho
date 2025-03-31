@@ -1,8 +1,8 @@
-import { BranchoItem } from 'core/interface';
-import { getBranchoHistory } from 'core/storage';
+import { BranchoItem } from '@core/interface';
+import { getBranchoHistory } from '@core/storage';
 import Fuse from 'fuse.js';
 import { showNotification } from '../content/html/notification';
-import { copyBranchNameToClipboard } from '../core/copyBranch';
+import { copyBranchNameToClipboard } from '@core/copyBranch';
 
 const fuseOptions = {
   isCaseSensitive: false,

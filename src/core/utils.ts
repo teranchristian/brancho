@@ -1,5 +1,5 @@
-import { JIRA_TITLE_SHORT_WORD_LIMIT } from 'core/constant';
-import { JiraConfig, JiraTitleLengthType } from 'core/interface';
+import { JIRA_TITLE_SHORT_WORD_LIMIT } from '@core/constant';
+import { JiraConfig, JiraTitleLengthType } from '@core/interface';
 
 export const sendMessageToContentScript = <T>(
   tabId: number,

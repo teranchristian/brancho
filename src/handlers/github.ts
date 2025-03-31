@@ -1,6 +1,6 @@
-import { GithubMessageResponse, RunnerResponse } from 'core/interface';
-import { sendMessageToContentScript } from 'core/utils';
-import { GITHUB_REGEX } from 'core/constant';
+import { GithubMessageResponse, RunnerResponse } from '@core/interface';
+import { sendMessageToContentScript } from '@core/utils';
+import { GITHUB_REGEX } from '@core/constant';
 
 export const githubHandler = {
   name: 'github',
