@@ -1,14 +1,14 @@
-import { copyBranchNameToClipboard } from 'core/copyBranch';
-import { pushNotification } from 'core/notification';
+import { copyBranchNameToClipboard } from '@core/copyBranch';
+import { pushNotification } from '@core/notification';
 import {
   executeContentScript,
   getActiveTab,
   handleRuntimeError,
   sendMessageToContentScript,
-} from 'core/utils';
-import { getHandlerNameForUrl } from 'handlers/handler';
-import { addToBranchoHistory, setDefaultConfig } from 'core/storage';
-import { BranchoItem } from 'core/interface';
+} from '@core/utils';
+import { getHandlerNameForUrl } from '@handlers/handler';
+import { addToBranchoHistory, setDefaultConfig } from '@core/storage';
+import { BranchoItem } from '@core/interface';
 
 const commandCopyBranchName = () => {
   getActiveTab((url, tabId) => {

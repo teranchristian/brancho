@@ -1,5 +1,5 @@
-import { JIRA_BRANCH_CONFIG_KEY } from 'core/constant';
-import { JiraConfig } from 'core/interface';
+import { JIRA_BRANCH_CONFIG_KEY } from '@core/constant';
+import { JiraConfig } from '@core/interface';
 
 // saveConfig.ts
 export function onSave(

@@ -2,9 +2,10 @@
   "compilerOptions": {
      "baseUrl": "src",
     "paths": {
-      "core/*": ["core/*"], 
-      "handlers/*": ["handlers/*"], 
-      "utils/*": ["utils/*"]
+      "@core/*": ["core/*"], 
+      "@handlers/*": ["handlers/*"], 
+      "@utils/*": ["utils/*"],
+      "@content/*": ["content/*"]
     },
     "target": "ES6",
     "allowSyntheticDefaultImports": true,

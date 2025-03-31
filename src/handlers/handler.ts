@@ -1,5 +1,5 @@
-import { githubHandler } from 'handlers/github';
-import { jiraHandler } from 'handlers/jira';
+import { githubHandler } from '@handlers/github';
+import { jiraHandler } from '@handlers/jira';
 
 export const handlers = [jiraHandler, githubHandler];
 

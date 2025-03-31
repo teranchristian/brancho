@@ -2,8 +2,8 @@ import {
   JIRA_BRANCH_CONFIG_KEY,
   DEFAULT_JIRA_CONFIG,
   BRANCHO_HISTORY_KEY,
-} from 'core/constant';
-import { BranchoItem, JiraConfig as JiraBranchConfig } from 'core/interface';
+} from '@core/constant';
+import { BranchoItem, JiraConfig as JiraBranchConfig } from '@core/interface';
 
 export const setDefaultConfig = () => {
   chrome.storage.sync.get([JIRA_BRANCH_CONFIG_KEY], (result) => {

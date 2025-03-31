@@ -1,6 +1,6 @@
-import { showNotification } from './html/notification';
-import { handleGitHub } from './siteHandlers/github';
-import { handleJira } from './siteHandlers/jira';
+import { showNotification } from '@content/html/notification';
+import { handleGitHub } from '@content/siteHandlers/github';
+import { handleJira } from '@content/siteHandlers/jira';
 
 const handlers: {
   [key: string]: (sendResponse: any) => void;

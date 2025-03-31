@@ -1,5 +1,5 @@
-import { JIRA_TITLE_SHORT_WORD_LIMIT } from 'core/constant';
-import { JiraTitleLengthType } from 'core/interface';
+import { JIRA_TITLE_SHORT_WORD_LIMIT } from '@core/constant';
+import { JiraTitleLengthType } from '@core/interface';
 
 export const getHTMLElementById = (id: string) =>
   document.getElementById(id) as HTMLElement;

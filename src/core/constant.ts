@@ -1,4 +1,4 @@
-import { JiraConfig } from 'core/interface';
+import { JiraConfig } from '@core/interface';
 
 export const DEFAULT_JIRA_CONFIG: JiraConfig = {
   keyCase: 'upper',

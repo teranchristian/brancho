@@ -1,7 +1,7 @@
-import { JiraMessageResponse, RunnerResponse } from 'core/interface';
-import { getBranchConfig } from 'core/storage';
-import { formatBranchName, sendMessageToContentScript } from 'core/utils';
-import { JIRA_REGEX } from 'core/constant';
+import { JiraMessageResponse, RunnerResponse } from '@core/interface';
+import { getBranchConfig } from '@core/storage';
+import { formatBranchName, sendMessageToContentScript } from '@core/utils';
+import { JIRA_REGEX } from '@core/constant';
 
 export const jiraHandler = {
   name: 'jira',
