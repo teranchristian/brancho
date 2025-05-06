@@ -83,7 +83,8 @@ module.exports = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
     background: path.join(__dirname, 'src', 'background.ts'),
-    content: path.join(__dirname, 'src', 'content/content.ts'),
+    scraper: path.join(__dirname, 'src', 'content/scraper.ts'),
+    commentToggler: path.join(__dirname, 'src', 'content/commentToggler.ts'),
     option: path.join(__dirname, 'src/option', 'option.ts'),
     popup: path.join(__dirname, 'src/popup', 'popup.ts'),
   },
@@ -117,6 +118,14 @@ module.exports = {
         test: /\.ts$/, // New rule for TypeScript files
         loader: 'ts-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.svg$/,
+        type: 'asset/source',
+      },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },

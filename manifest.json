@@ -24,7 +24,15 @@
         "<all_urls>"
       ],
       "js": [
-        "content.js"
+        "scraper.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://github.com/*/pull/*"
+      ],
+      "js": [
+        "commentToggler.js"
       ]
     }
   ],

@@ -1,4 +1,4 @@
-import notificationHtml from '@content/html/notification.html';
+import notificationHtml from '@content/scraper/html/notification.html';
 
 export const showNotification = (branchName: string) => {
   // Remove the existing notification

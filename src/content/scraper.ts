@@ -1,6 +1,6 @@
-import { showNotification } from '@content/html/notification';
-import { handleGitHub } from '@content/siteHandlers/github';
-import { handleJira } from '@content/siteHandlers/jira';
+import { showNotification } from '@content/scraper/html/notification';
+import { handleGitHub } from '@content/scraper/siteHandlers/github';
+import { handleJira } from '@content/scraper/siteHandlers/jira';
 
 const handlers: {
   [key: string]: (sendResponse: any) => void;
